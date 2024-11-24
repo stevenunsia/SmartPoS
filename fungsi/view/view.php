@@ -49,6 +49,52 @@ class view
         return $hasil;
     }
 
+    public function supplier() {
+        $sql = "SELECT * FROM supplier";
+        $row = $this->db->prepare($sql);
+        $row->execute();
+        $hasil = $row->fetchAll();
+        return $hasil;
+    }
+    
+    public function supplier_cari($cari)
+    {
+        $sql = "select*from supplier
+                where id_supplier like '%$cari%' or nama_supplier like '%$cari%' 
+                or alamat like '%$cari%' or telepon line '%$cari%'";
+        $row = $this-> db -> prepare($sql);
+        $row -> execute();
+        $hasil = $row -> fetchAll();
+        return $hasil;
+    }
+
+    public function supplier_id()
+    {
+        $sql = 'SELECT * FROM supplier ORDER BY id_supplier DESC';
+        $row = $this-> db -> prepare($sql);
+        $row -> execute();
+        $hasil = $row -> fetch();
+
+        $urut = substr($hasil['id_supplier'], 2, 3);
+        $tambah = (int) $urut + 1;
+        if (strlen($tambah) == 1) {
+            $format = 'SP00'.$tambah.'';
+        } elseif (strlen($tambah) == 2) {
+            $format = 'SP0'.$tambah.'';
+        } else {
+            $ex = explode('SP', $hasil['id_supplier']);
+            $no = (int) $ex[1] + 1;
+            $format = 'SP'.$no.'';
+        }
+        return $format;
+    }
+    public function supplier_edit($id) {
+        $sql = "SELECT * FROM supplier WHERE id_supplier = ?";
+        $row = $this->db->prepare($sql);
+        $row->execute(array($id));
+        $hasil = $row->fetch();
+        return $hasil;
+    }
     public function barang()
     {
         $sql = "select barang.*, kategori.id_kategori, kategori.nama_kategori
@@ -72,6 +118,7 @@ class view
         return $hasil;
     }
 
+    
     public function barang_edit($id)
     {
         $sql = "select barang.*, kategori.id_kategori, kategori.nama_kategori

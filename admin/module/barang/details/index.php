@@ -6,17 +6,17 @@
 <h4>Details Barang</h4>
 <?php if(isset($_GET['success-stok'])){?>
 <div class="alert alert-success">
-	<p>Tambah Stok Berhasil !</p>
+	<p>Stock Berhasil di Tambahkan !</p>
 </div>
 <?php }?>
 <?php if(isset($_GET['success'])){?>
 <div class="alert alert-success">
-	<p>Tambah Data Berhasil !</p>
+	<p>Data Berhasil di Tambahkan !</p>
 </div>
 <?php }?>
 <?php if(isset($_GET['remove'])){?>
 <div class="alert alert-danger">
-	<p>Hapus Data Berhasil !</p>
+	<p>Data Berhasil di Hapus !</p>
 </div>
 <?php }?>
 <div class="card card-body">

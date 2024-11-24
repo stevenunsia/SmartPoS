@@ -31,6 +31,19 @@ if (!empty($_SESSION['admin'])) {
         echo '<script>window.location="../../index.php?page=kategori&uid='.$id.'&success-edit=edit-data"</script>';
     }
 
+    if (!empty($_GET['supplier']) && $_GET['supplier'] == 'edit') {
+        $id = htmlentities($_POST['id']);
+        $nama = htmlentities($_POST['nama']);
+        $alamat = htmlentities($_POST['alamat']);
+        $telepon = htmlentities($_POST['telepon']);
+        $tgl_update = date("Y-m-d H:i:s");
+        $sql = 'UPDATE supplier SET nama_supplier=?, alamat=?, telepon=?, tgl_update=? WHERE id_supplier=?';
+        $data = [$nama, $alamat, $telepon, $tgl_update, $id];
+        $row = $config->prepare($sql);
+        $row->execute($data);    
+        echo '<script>window.location="../../index.php?page=supplier/edit&supplier='.$id.'&success=edit-data"</script>';
+    }
+    
     if (!empty($_GET['stok'])) {
         $restok = htmlentities($_POST['restok']);
         $id = htmlentities($_POST['id']);

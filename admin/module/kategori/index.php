@@ -2,19 +2,20 @@
 <br />
 <?php if(isset($_GET['success'])){?>
 <div class="alert alert-success">
-    <p>Tambah Data Berhasil !</p>
+    <p>Kategori Berhasil di Tambahkan</p>
 </div>
 <?php }?>
 <?php if(isset($_GET['success-edit'])){?>
 <div class="alert alert-success">
-    <p>Update Data Berhasil !</p>
+    <p>Kategori Berhasil di Update !</p>
 </div>
 <?php }?>
 <?php if(isset($_GET['remove'])){?>
 <div class="alert alert-danger">
-    <p>Hapus Data Berhasil !</p>
+    <p>Data Berhasil di Hapus !</p>
 </div>
 <?php }?>
+
 <?php 
 	if(!empty($_GET['uid'])){
 	$sql = "SELECT * FROM kategori WHERE id_kategori = ?";

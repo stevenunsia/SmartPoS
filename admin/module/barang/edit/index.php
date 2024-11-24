@@ -12,12 +12,12 @@
  <h4>Edit Barang</h4>
  <?php if(isset($_GET['success'])){?>
  <div class="alert alert-success">
-     <p>Edit Data Berhasil !</p>
+     <p>Data Stock di Update !</p>
  </div>
  <?php }?>
  <?php if(isset($_GET['remove'])){?>
  <div class="alert alert-danger">
-     <p>Hapus Data Berhasil !</p>
+     <p>Data Berhasil di Hapus !</p>
  </div>
  <?php }?>
 <div class="card card-body">

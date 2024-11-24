@@ -14,6 +14,23 @@ if (!empty($_SESSION['admin'])) {
         echo '<script>window.location="../../index.php?page=kategori&&success=tambah-data"</script>';
     }
 
+    if (!empty($_GET['supplier'])) {
+        $id = htmlentities($_POST['id']);
+        $nama= htmlentities($_POST['nama']);
+        $alamat= htmlentities($_POST['alamat']);
+        $telepon= htmlentities($_POST['telepon']);
+        $tgl = htmlentities($_POST['tgl']);
+        $data[] = $id;  
+        $data[] = $nama;
+        $data[] = $alamat;
+        $data[] = $telepon;
+        $data[] = $tgl;
+        $sql = 'INSERT INTO supplier (id_supplier, nama_supplier, alamat, telepon, tgl_input) VALUES(?,?,?,?,?)';
+        $row = $config -> prepare($sql);
+        $row -> execute($data);
+        echo '<script>window.location="../../index.php?page=supplier&&success=tambah-data"</script>';
+    }
+
     if (!empty($_GET['barang'])) {
         $id = htmlentities($_POST['id']);
         $kategori = htmlentities($_POST['kategori']);
