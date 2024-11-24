@@ -171,15 +171,15 @@ if (!empty($_SESSION['admin'])) {
         $id = htmlentities($_POST['id']);
         $user = htmlentities($_POST['user']);
         $pass = htmlentities($_POST['pass']);
-
-        $data[] = $user;
-        $data[] = $pass;
-        $data[] = $id;
-        $sql = 'UPDATE login SET user=?,pass=md5(?) WHERE id_member=?';
-        $row = $config -> prepare($sql);
-        $row -> execute($data);
+        $passHash = hash('sha256', $pass);  // Menggunakan SHA-256 untuk hashing password
+    
+        $data = [$user, $passHash, $id];
+        $sql = 'UPDATE login SET user=?, pass=? WHERE id_member=?';
+        $row = $config->prepare($sql);
+        $row->execute($data);
         echo '<script>window.location="../../index.php?page=user&success=edit-data"</script>';
     }
+    
 
     if (!empty($_GET['jual'])) {
         $id = htmlentities($_POST['id']);

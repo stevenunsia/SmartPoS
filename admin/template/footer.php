@@ -8,8 +8,8 @@
         <div class="container my-auto">
             <div class="copyright text-center my-auto">
                 <span>
-                    <?php echo date('Y');?> - Sistem Penjualan Barang Berbasis Web |
-                    BY <b><a href="https://RafStore.com" target="_blank">RafStore.COM</a></b>
+                    <?php echo date('Y');?> - Sistem Penjualan Smart PoS Berbasis AI |
+                    BY <b><a href="https://github.com/stevenunsia/SmartPoS" target="_blank"> IF701 | Kelompok 2 | Informatika PJJ - UNSIA </a></b>
                 </span>
             </div>
         </div>

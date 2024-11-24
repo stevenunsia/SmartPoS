@@ -1,0 +1,22 @@
+/* custom.css */
+
+html, body {
+    height: 100%; /* Memastikan body mengambil 100% tinggi */
+    margin: 0; /* Menghapus margin default */
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Memastikan wrapper mengambil minimal tinggi layar */
+}
+
+.content {
+    flex: 1; /* Membuat konten mengisi ruang yang tersedia */
+}
+
+.footer {
+    background-color: #f8f9fc; /* Warna latar belakang footer */
+    padding: 20px; /* Padding footer */
+    text-align: center; /* Rata tengah isi footer */
+}

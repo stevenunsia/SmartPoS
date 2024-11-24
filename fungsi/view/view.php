@@ -95,6 +95,15 @@ class view
         $hasil = $row->fetch();
         return $hasil;
     }
+
+    public function supplier_row()
+    {
+        $sql = "SELECT * FROM supplier";
+        $row = $this-> db -> prepare($sql);
+        $row -> execute();
+        $hasil = $row -> rowCount();
+        return $hasil;
+    }
     public function barang()
     {
         $sql = "select barang.*, kategori.id_kategori, kategori.nama_kategori

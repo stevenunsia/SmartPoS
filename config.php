@@ -1,19 +1,4 @@
 <?php
-/*
-  | Source Code Aplikasi Penjualan Barang Kasir dengan PHP & MYSQL
-  | 
-  | @package   : pos-kasir-php
-  | @file	   : config.php ( untuk mengatur koneksi php ke database mysql )
-  | @author    : fauzan1892 / Fauzan Falah
-  | @copyright : Copyright (c) 2017-2021 Codekop.com (https://www.codekop.com)
-  | @blog      : https://www.codekop.com/read/source-code-aplikasi-penjualan-barang-kasir-dengan-php-amp-mysql-gratis.html
-  |
-  | 
-  | keterangan : untuk login aplikasi dengan username : admin dan password : 123
-  | 
-  | 
-  | 
- */
 
 date_default_timezone_set("Asia/Jakarta");
 error_reporting(0);
@@ -22,7 +7,7 @@ error_reporting(0);
 	$host 	= 'localhost'; // host server
 	$user 	= 'root';  // username server
 	$pass 	= ''; // password server, kalau pakai xampp kosongin saja
-	$dbname = 'raf_store'; // nama database anda
+	$dbname = 'smartpos_db'; // nama database anda
 	
 	try{
 		$config = new PDO("mysql:host=$host;dbname=$dbname;", $user,$pass);
