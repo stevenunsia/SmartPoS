@@ -61,7 +61,7 @@ class view
     {
         $sql = "select*from supplier
                 where id_supplier like '%$cari%' or nama_supplier like '%$cari%' 
-                or alamat like '%$cari%' or telepon line '%$cari%'";
+                or alamat like '%$cari%' or telepon like '%$cari%'";
         $row = $this-> db -> prepare($sql);
         $row -> execute();
         $hasil = $row -> fetchAll();
@@ -104,6 +104,83 @@ class view
         $hasil = $row -> rowCount();
         return $hasil;
     }
+
+    public function merk() {
+        $sql = "SELECT * FROM merk";
+        $row = $this->db->prepare($sql);
+        $row->execute();
+        $hasil = $row->fetchAll();
+        return $hasil;
+    }
+
+    public function merk_cari($cari)
+    {
+        $sql = "select*from merk
+                where id_merk like '%$cari%' or nama_merk like '%$cari%'";
+        $row = $this-> db -> prepare($sql);
+        $row -> execute();
+        $hasil = $row -> fetchAll();
+        return $hasil;
+    }
+
+    public function merk_id()
+    {
+        $sql = 'SELECT * FROM merk ORDER BY id_merk DESC';
+        $row = $this-> db -> prepare($sql);
+        $row -> execute();
+        $hasil = $row -> fetch();
+
+        $urut = substr($hasil['id_merk'], 2, 3);
+        $tambah = (int) $urut + 1;
+        if (strlen($tambah) == 1) {
+            $format = 'MR00'.$tambah.'';
+        } elseif (strlen($tambah) == 2) {
+            $format = 'MR0'.$tambah.'';
+        } else {
+            $ex = explode('MR', $hasil['id_merk']);
+            $no = (int) $ex[1] + 1;
+            $format = 'MR'.$no.'';
+        }
+        return $format;
+    }
+
+    public function merk_edit($id) {
+        $sql = "SELECT * FROM merk WHERE id_merk = ?";
+        $row = $this->db->prepare($sql);
+        $row->execute(array($id));
+        $hasil = $row->fetch();
+        return $hasil;
+    }
+
+    public function merk_row()
+    {
+        $sql = "SELECT * FROM merk";
+        $row = $this-> db -> prepare($sql);
+        $row -> execute();
+        $hasil = $row -> rowCount();
+        return $hasil;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function barang()
     {
         $sql = "select barang.*, kategori.id_kategori, kategori.nama_kategori
@@ -314,5 +391,17 @@ class view
         $row -> execute();
         $hasil = $row -> fetch();
         return $hasil;
+    }
+
+    public function getSalesData() 
+    {
+        $sql = "SELECT DATE(tanggal_input) as tanggal, SUM(jumlah) as total_jumlah, SUM(total) as total_penjualan 
+                FROM nota 
+                GROUP BY DATE(tanggal_input) 
+                ORDER BY DATE(tanggal_input) ASC";
+        
+        $stmt = $this-> db ->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

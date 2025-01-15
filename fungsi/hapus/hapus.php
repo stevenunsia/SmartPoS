@@ -21,6 +21,15 @@ if (!empty($_SESSION['admin'])) {
         echo '<script>window.location="../../index.php?page=supplier&&remove=hapus-data"</script>';
     }
 
+    if (!empty(htmlentities($_GET['merk']))) {
+        $id= htmlentities($_GET['id']);
+        $data[] = $id;
+        $sql = 'DELETE FROM merk WHERE id_merk=?';
+        $row = $config -> prepare($sql);
+        $row -> execute($data);
+        echo '<script>window.location="../../index.php?page=merk&&remove=hapus-data"</script>';
+    }
+
     if (!empty(htmlentities($_GET['barang']))) {
         $id= htmlentities($_GET['id']);
         $data[] = $id;

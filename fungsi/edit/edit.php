@@ -43,6 +43,17 @@ if (!empty($_SESSION['admin'])) {
         $row->execute($data);    
         echo '<script>window.location="../../index.php?page=supplier/edit&supplier='.$id.'&success=edit-data"</script>';
     }
+
+    if (!empty($_GET['merk']) && $_GET['merk'] == 'edit') {
+        $id = htmlentities($_POST['id']);
+        $nama = htmlentities($_POST['nama']);
+        $tgl_update = date("Y-m-d H:i:s");
+        $sql = 'UPDATE merk SET nama_merk=?, tgl_update=? WHERE id_merk=?';
+        $data = [$nama, $tgl_update, $id];
+        $row = $config->prepare($sql);
+        $row->execute($data);    
+        echo '<script>window.location="../../index.php?page=merk/edit&merk='.$id.'&success=edit-data"</script>';
+    }
     
     if (!empty($_GET['stok'])) {
         $restok = htmlentities($_POST['restok']);

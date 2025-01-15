@@ -111,7 +111,7 @@
 								<label class="control-label" for="typeahead">Username </label>
 								<div class="input-group">
 									<input type="text" class="form-control" style="border-radius:0px;" name="user"
-										data-items="4" value="<?php echo $hasil['user'];?>" />
+										data-items="4" readonly value="<?php echo $hasil['user'];?>" />
 								</div>
 							</div>
 							<div class="control-group mb-3">

@@ -49,6 +49,7 @@
                             <th>ID Barang</th>
                             <th>Kategori</th>
                             <th>Nama Barang</th>
+                            <th>Supplier</th>
                             <th>Merk</th>
                             <th>Stok</th>
                             <th>Harga Beli</th>
@@ -77,7 +78,8 @@
                             <td><?php echo $isi['id_barang'];?></td>
                             <td><?php echo $isi['nama_kategori'];?></td>
                             <td><?php echo $isi['nama_barang'];?></td>
-                            <td><?php echo $isi['merk'];?></td>
+                            <td><?php echo $isi['nama_kategori'];?></td>
+                            <td><?php echo $isi['nama_merk'];?></td>
                             <td>
                                 <?php if($isi['stok'] == '0'){?>
                                 <button class="btn btn-danger"> Habis</button>
@@ -173,9 +175,28 @@
                                             name="nama"></td>
                                 </tr>
                                 <tr>
+                                    <td>Supplier</td>
+                                    <td>
+                                        <select name="supplier" class="form-control" required>
+                                            <option value="#">Pilih Supplier</option>
+                                            <?php  $kat = $lihat -> supplier(); foreach($kat as $isi){ 	?>
+                                            <option value="<?php echo $isi['id_supplier'];?>">
+                                                <?php echo $isi['nama_supplier'];?></option>
+                                            <?php }?>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td>Merk Barang</td>
-                                    <td><input type="text" placeholder="Merk Barang" required class="form-control"
-                                            name="merk"></td>
+                                    <td>
+                                        <select name="merk" class="form-control" required>
+                                            <option value="#">Pilih Merk Barang</option>
+                                            <?php  $kat = $lihat -> merk(); foreach($kat as $isi){ 	?>
+                                            <option value="<?php echo $isi['id_merk'];?>">
+                                                <?php echo $isi['nama_merk'];?></option>
+                                            <?php }?>
+                                        </select>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Harga Beli</td>

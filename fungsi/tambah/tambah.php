@@ -31,10 +31,24 @@ if (!empty($_SESSION['admin'])) {
         echo '<script>window.location="../../index.php?page=supplier&&success=tambah-data"</script>';
     }
 
+    if (!empty($_GET['merk'])) {
+        $id = htmlentities($_POST['id']);
+        $nama= htmlentities($_POST['nama']);
+        $tgl = htmlentities($_POST['tgl']);
+        $data[] = $id;  
+        $data[] = $nama;
+        $data[] = $tgl;
+        $sql = 'INSERT INTO merk (id_merk, nama_merk, tgl_input) VALUES(?,?,?)';
+        $row = $config -> prepare($sql);
+        $row -> execute($data);
+        echo '<script>window.location="../../index.php?page=merk&&success=tambah-data"</script>';
+    }
+
     if (!empty($_GET['barang'])) {
         $id = htmlentities($_POST['id']);
         $kategori = htmlentities($_POST['kategori']);
         $nama = htmlentities($_POST['nama']);
+        $supplier = htmlentities($_POST['supplier']);
         $merk = htmlentities($_POST['merk']);
         $beli = htmlentities($_POST['beli']);
         $jual = htmlentities($_POST['jual']);
@@ -45,14 +59,15 @@ if (!empty($_SESSION['admin'])) {
         $data[] = $id;
         $data[] = $kategori;
         $data[] = $nama;
+        $data[] = $supplier;
         $data[] = $merk;
         $data[] = $beli;
         $data[] = $jual;
         $data[] = $satuan;
         $data[] = $stok;
         $data[] = $tgl;
-        $sql = 'INSERT INTO barang (id_barang,id_kategori,nama_barang,merk,harga_beli,harga_jual,satuan_barang,stok,tgl_input) 
-			    VALUES (?,?,?,?,?,?,?,?,?) ';
+        $sql = 'INSERT INTO barang (id_barang,id_kategori,nama_barang,nama_supplier,merk,harga_beli,harga_jual,satuan_barang,stok,tgl_input) 
+			    VALUES (?,?,?,?,?,?,?,?,?,?) ';
         $row = $config -> prepare($sql);
         $row -> execute($data);
         echo '<script>window.location="../../index.php?page=barang&success=tambah-data"</script>';
