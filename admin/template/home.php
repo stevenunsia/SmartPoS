@@ -2,17 +2,26 @@
 <br/>
 
 <?php
-// Ambil data penjualan harian
-$salesData = $lihat -> getSalesData();
-$totalSalesToday = 0; // Variabel untuk total penjualan hari ini
-foreach ($data as $row) {
-    $salesData[] = [
+// Ambil data penjualan secara default
+$sql = "SELECT DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) AS tanggal, 
+               SUM(CAST(jumlah AS UNSIGNED)) AS total_jumlah, 
+               SUM(CAST(total AS UNSIGNED)) AS total_penjualan 
+        FROM nota 
+        GROUP BY DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) 
+        ORDER BY tanggal ASC;";
+
+$stmt = $config->query($sql);
+$salesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$totalSalesToday = 0;
+$data = [];
+foreach ($salesData as $row) {
+    $data[] = [
         'tanggal' => $row['tanggal'],
         'total_jumlah' => (int)$row['total_jumlah'],
         'total_penjualan' => (float)$row['total_penjualan']
     ];
-    
-    // Hitung total penjualan hari ini
+
     if ($row['tanggal'] == date('Y-m-d')) {
         $totalSalesToday = (float)$row['total_penjualan'];
     }
@@ -23,76 +32,112 @@ if (isset($_POST['filter'])) {
     $startDate = $_POST['start_date'];
     $endDate = $_POST['end_date'];
 
-    $sql = "SELECT DATE(tanggal_input) as tanggal, SUM(jumlah) as total_jumlah, SUM(total) as total_penjualan 
-            FROM nota 
-            WHERE DATE(tanggal_input) BETWEEN :start_date AND :end_date
-            GROUP BY DATE(tanggal_input) 
-            ORDER BY DATE(tanggal_input) ASC";
+    if (!empty($startDate) && !empty($endDate) && strtotime($startDate) <= strtotime($endDate)) {
 
-    $stmt = $config->prepare($sql);
-    $stmt->bindParam(':start_date', $startDate);
-    $stmt->bindParam(':end_date', $endDate);
-    $stmt->execute();
-    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $sql = "SELECT 
+                    DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) AS tanggal, 
+                    SUM(CAST(jumlah AS UNSIGNED)) AS total_jumlah, 
+                    SUM(CAST(total AS UNSIGNED)) AS total_penjualan 
+                FROM nota 
+                WHERE DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) 
+                    BETWEEN STR_TO_DATE(:start_date, '%Y-%m-%d') 
+                    AND STR_TO_DATE(:end_date, '%Y-%m-%d')
+                GROUP BY DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) 
+                ORDER BY DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) ASC;";
 
-    $salesData = [];
-    foreach ($data as $row) {
-        $salesData[] = [
-            'tanggal' => $row['tanggal'],
-            'total_jumlah' => (int)$row['total_jumlah'],
-            'total_penjualan' => (float)$row['total_penjualan']
-        ];
+        $stmt = $config->prepare($sql);
+        $stmt->bindParam(':start_date', $startDate);
+        $stmt->bindParam(':end_date', $endDate);
+        $stmt->execute();
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $salesData = [];
+        foreach ($data as $row) {
+            $salesData[] = [
+                'tanggal' => $row['tanggal'],
+                'total_jumlah' => (int)$row['total_jumlah'],
+                'total_penjualan' => (float)$row['total_penjualan']
+            ];
+        }
+    } else {
+        echo "<script>alert('Tanggal tidak valid');</script>";
     }
 }
 ?>
     <!-- Form untuk filter tanggal -->
-    <form method="POST" class="mb-4">
-        <div class="form-row align-items-end">
+    <!-- Form untuk filter tanggal -->
+<form method="POST" action="index.php" class="mb-4">
+    <div class="form-row align-items-end">
+        <div class="col align-items-end">
+            <label for="start_date">Tanggal Mulai</label>
+            <input type="date" name="start_date" id="start_date" class="form-control" value="<?=$startDate?>"required>
+        </div>
+        <div class="col align-items-end">
+            <label for="end_date">Tanggal Akhir</label>
+            <input type="date" name="end_date" id="end_date" value="<?=$endDate?>" class="form-control" required>
+        </div>
+        <div>
             <div class="col align-items-end">
-                <label for="start_date">Tanggal Mulai</label>
-                <input type="date" name="start_date" class="form-control" required>
+                <button type="submit" id="jalanin" name="filter" class="btn btn-primary">Sortir</button>
+                <a href="index.php" class="btn btn-danger">Reset</a>
             </div>
-            <div class="col align-items-end">
-                <label for="end_date">Tanggal Akhir</label>
-                <input type="date" name="end_date" class="form-control" required>
+        </div>
+    </div>
+
+    <!-- Tombol sortir cepat dengan auto-submit -->
+
+</form>
+
+<div class="mb-4">
+    <button type="button" class="btn btn-info" onclick="setDateRange('today'); return false;">Hari Ini</button>
+    <button type="button" class="btn btn-info" onclick="setDateRange('yesterday'); return false;">Kemarin</button>
+    <button type="button" class="btn btn-info" onclick="setDateRange('last_week'); return false;">1 Minggu Terakhir</button>
+    <button type="button" class="btn btn-info" onclick="setDateRange('last_3_weeks'); return false;">3 Minggu Terakhir</button>
+    <button type="button" class="btn btn-info" onclick="setDateRange('last_month'); return false;">1 Bulan Terakhir</button>
+    <button type="button" class="btn btn-info" onclick="setDateRange('last_year'); return false;">1 Tahun Terakhir</button>
+</div>
+
+    
+
+<div class="row">
+    <!-- Grafik Penjualan Harian (Kiri) -->
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Grafik Penjualan</h6>
             </div>
-            <div>
-                <div class="col align-items-end">
-                    <button type="submit" name="filter" class="btn btn-primary">Sortir</button>
-                    <a href="index.php" class="btn btn-danger">Reset</a>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="myAreaChartPenjualan"></canvas>
                 </div>
             </div>
         </div>
-    </form>
-
-    <!-- Tombol sortir cepat -->
-    <div class="mb-4">
-        <button class="btn btn-info" onclick="setDateRange('today')">Hari Ini</button>
-        <button class="btn btn-info" onclick="setDateRange('yesterday')">Kemarin</button>
-        <button class="btn btn-info" onclick="setDateRange('last_week')">1 Minggu Terakhir</button>
-        <button class="btn btn-info" onclick="setDateRange('last_3_weeks')">3 Minggu Terakhir</button>
-        <button class="btn btn-info" onclick="setDateRange('last_month')">1 Bulan Terakhir</button>
     </div>
 
-    <!-- Grafik Penjualan Harian -->
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Grafik Penjualan</h6>
-    </div>
-    <div class="card-body">
-        <div class="chart-area">
-            <canvas id="myAreaChart"></canvas>
+    <!-- Grafik Jumlah Barang (Kanan) -->
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-success">Grafik Jumlah Barang</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="myAreaChartJumlah"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // Data untuk grafik
-    var salesData = {
+    // Data untuk grafik penjualan
+    var salesDataPenjualan = {
         labels: <?php echo json_encode(array_column($salesData, 'tanggal')); ?>,
- datasets: [{
+        datasets: [{
             label: "Total Penjualan",
             backgroundColor: "rgba(78, 115, 223, 0.05)",
             borderColor: "rgba(78, 115, 223, 1)",
@@ -106,26 +151,36 @@ if (isset($_POST['filter'])) {
         }]
     };
 
-    // Konfigurasi Chart
-    var ctx = document.getElementById("myAreaChart");
-    var myLineChart = new Chart(ctx, {
+    // Data untuk grafik jumlah barang
+    var salesDataJumlah = {
+        labels: <?php echo json_encode(array_column($salesData, 'tanggal')); ?>,
+        datasets: [{
+            label: "Total Jumlah Barang",
+            backgroundColor: "rgba(28, 200, 138, 0.05)",
+            borderColor: "rgba(28, 200, 138, 1)",
+            pointRadius: 5,
+            pointBackgroundColor: "rgba(28, 200, 138, 1)",
+            pointBorderColor: "rgba(255, 255, 255, 0.8)",
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(28, 200, 138, 1)",
+            pointHoverBorderColor: "rgba(255, 255, 255, 1)",
+            data: <?php echo json_encode(array_column($salesData, 'total_jumlah')); ?>
+        }]
+    };
+
+    // Konfigurasi Chart Penjualan
+    var ctxPenjualan = document.getElementById("myAreaChartPenjualan");
+    var myLineChartPenjualan = new Chart(ctxPenjualan, {
         type: 'line',
-        data: salesData,
+        data: salesDataPenjualan,
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
                 xAxes: [{
-                    time: {
-                        unit: 'day'
-                    },
-                    gridLines: {
-                        display: false,
-                        drawBorder: false
-                    },
-                    ticks: {
-                        maxTicksLimit: 6
-                    }
+                    time: { unit: 'day' },
+                    gridLines: { display: false },
+                    ticks: { maxTicksLimit: 6 }
                 }],
                 yAxes: [{
                     ticks: {
@@ -133,26 +188,42 @@ if (isset($_POST['filter'])) {
                         max: Math.ceil(<?php echo !empty($salesData) ? max(array_column($salesData, 'total_penjualan')) : 0; ?> / 1000) * 1000,
                         maxTicksLimit: 5
                     },
-                    gridLines: {
-                        color: "rgba(0, 0, 0, .125)",
-                        zeroLineColor: "rgba(0, 0, 0, .125)",
-                        drawBorder: false
-                    }
-                }],
+                    gridLines: { color: "rgba(0, 0, 0, .125)" }
+                }]
             },
-            legend: {
-                display: false
-            },
-            tooltips: {
-                mode: 'index',
-                intersect: false,
-            },
-            hover: {
-                mode: 'nearest',
-                intersect: true
-            }
+            legend: { display: true },
+            tooltips: { mode: 'index', intersect: false }
         }
     });
+
+    // Konfigurasi Chart Jumlah Barang
+    var ctxJumlah = document.getElementById("myAreaChartJumlah");
+    var myLineChartJumlah = new Chart(ctxJumlah, {
+        type: 'line',
+        data: salesDataJumlah,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                xAxes: [{
+                    time: { unit: 'day' },
+                    gridLines: { display: false },
+                    ticks: { maxTicksLimit: 6 }
+                }],
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                        max: Math.ceil(<?php echo !empty($salesData) ? max(array_column($salesData, 'total_jumlah')) : 0; ?> / 100) * 100,
+                        maxTicksLimit: 5
+                    },
+                    gridLines: { color: "rgba(0, 0, 0, .125)" }
+                }]
+            },
+            legend: { display: true },
+            tooltips: { mode: 'index', intersect: false }
+        }
+    });
+
 
     // Fungsi untuk mengatur rentang tanggal
     function setDateRange(range) {
@@ -161,32 +232,46 @@ if (isset($_POST['filter'])) {
 
         switch (range) {
             case 'today':
-                startDate = endDate = today.toISOString().split('T')[0];
+                startDate = endDate = today;
                 break;
             case 'yesterday':
-                today.setDate(today.getDate() - 1);
-                startDate = endDate = today.toISOString().split('T')[0];
+                startDate = new Date(today);
+                startDate.setDate(today.getDate() - 1);
+                endDate = new Date(startDate);
                 break;
             case 'last_week':
-                startDate = new Date();
+                startDate = new Date(today);
                 startDate.setDate(today.getDate() - 7);
-                endDate = today;
+                endDate = new Date(today);
                 break;
             case 'last_3_weeks':
-                startDate = new Date();
+                startDate = new Date(today);
                 startDate.setDate(today.getDate() - 21);
-                endDate = today;
+                endDate = new Date(today);
                 break;
             case 'last_month':
-                startDate = new Date();
+                startDate = new Date(today);
                 startDate.setMonth(today.getMonth() - 1);
-                endDate = today;
+                startDate.setDate(1);
+                endDate = new Date(today);
                 break;
+            case 'last_year':
+                startDate = new Date(today.getFullYear() - 1, 0, 1);
+                endDate = new Date(today.getFullYear() - 1, 11, 31);
+                break;
+            default:
+                console.error("Invalid range provided");
+                return;
         }
 
+        // Set input values
         document.getElementById('start_date').value = startDate.toISOString().split('T')[0];
         document.getElementById('end_date').value = endDate.toISOString().split('T')[0];
+
+        // Klik tombol "Sortir" setelah tanggal diatur
+        document.getElementById('jalanin').click();
     }
+
 </script>
 
 <?php 
