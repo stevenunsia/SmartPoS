@@ -10,7 +10,7 @@
 		<table class="table table-striped">
 			<tr>
 				<td>Kode Supplier</td>
-				<td><?php echo $hasil['id_supplier'];?></td>
+				<td><?php echo $hasil['kode_supplier'];?></td>
 			</tr>
 			<tr>
 				<td>Nama Supplier</td>

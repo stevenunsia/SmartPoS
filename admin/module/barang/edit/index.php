@@ -27,7 +27,7 @@
 		<table class="table table-striped">
 			<form action="fungsi/edit/edit.php?barang=edit" method="POST" enctype="multipart/form-data">
 				<tr>
-					<td>ID Barang</td>
+					<td>Kode Barang</td>
 					<td><input type="text" readonly="readonly" class="form-control" value="<?php echo $hasil['kode_barang'];?>"
 							name="kode_barang"></td>
 							<input type="hidden" name="id" value="<?php echo $hasil['id'];?>">

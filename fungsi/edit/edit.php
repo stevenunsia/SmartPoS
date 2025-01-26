@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 if (!empty($_SESSION['admin'])) {
     require '../../config.php';
@@ -20,39 +23,91 @@ if (!empty($_SESSION['admin'])) {
         echo '<script>window.location="../../index.php?page=pengaturan&success=edit-data"</script>';
     }
 
-    if (!empty($_GET['kategori'])) {
-        $nama= htmlentities($_POST['kategori']);
-        $id= htmlentities($_POST['id']);
-        $data[] = $nama;
-        $data[] = $id;
-        $sql = 'UPDATE kategori SET  nama_kategori=? WHERE id_kategori=?';
-        $row = $config -> prepare($sql);
-        $row -> execute($data);
-        echo '<script>window.location="../../index.php?page=kategori&uid='.$id.'&success-edit=edit-data"</script>';
+    if (!empty($_GET['kategori']) && $_GET['kategori'] == 'edit') {
+
+        $id = isset($_POST['id']) ? htmlentities($_POST['id']) : '';
+        $nama_kategori = isset($_POST['nama_kategori']) ? htmlentities($_POST['nama_kategori']) : '';
+        $tgl_input = date("Y-m-d H:i:s");
+        $tgl_update = date("Y-m-d H:i:s");
+
+        try {
+            $data = [$nama_merk, $tgl_update, $id];
+        
+            // Query untuk INSERT data baru
+            $sql = 'UPDATE kategori SET 
+                    nama_kategori = :nama_kategori, 
+                    tgl_update = :tgl_update 
+                    WHERE id = :id';
+
+            $stmt = $config->prepare($sql);
+            $stmt->bindParam(':nama_kategori', $nama_kategori, PDO::PARAM_STR);
+            $stmt->bindParam(':tgl_update', $tgl_update, PDO::PARAM_STR);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            // Redirect setelah berhasil insert
+            echo '<script>window.location="../../index.php?page=kategori&uid='.$id.'&success-edit=edit-data"</script>';
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
 
-    if (!empty($_GET['supplier']) && $_GET['supplier'] == 'edit') {
-        $id = htmlentities($_POST['id']);
-        $nama = htmlentities($_POST['nama']);
-        $alamat = htmlentities($_POST['alamat']);
-        $telepon = htmlentities($_POST['telepon']);
+    if (!empty($_GET['supplier']) && $_GET['supplier'] == 'edit' ) {
+
+        $id = isset($_POST['id']) ? htmlentities($_POST['id']) : '';
+        $kode_supplier = isset($_POST['kode_supplier']) ? htmlentities($_POST['kode_supplier']) : '';
+        $nama_supplier = isset($_POST['nama_supplier']) ? htmlentities($_POST['nama_supplier']) : '';
+        $alamat = isset($_POST['alamat']) ? htmlentities($_POST['alamat']) : '';
+        $telepon = isset($_POST['telepon']) ? htmlentities($_POST['telepon']) : '';
+        $tgl_input = date("Y-m-d H:i:s");
         $tgl_update = date("Y-m-d H:i:s");
-        $sql = 'UPDATE supplier SET nama_supplier=?, alamat=?, telepon=?, tgl_update=? WHERE id_supplier=?';
-        $data = [$nama, $alamat, $telepon, $tgl_update, $id];
-        $row = $config->prepare($sql);
-        $row->execute($data);    
-        echo '<script>window.location="../../index.php?page=supplier/edit&supplier='.$id.'&success=edit-data"</script>';
+
+        try {
+            $data = [$kode_supplier, $nama_supplier, $alamat, $telepon, $tgl_update, $id];
+        
+            // Query untuk INSERT data baru
+            $sql = 'UPDATE supplier SET kode_supplier=?, nama_supplier=?, alamat=?, telepon=?, tgl_update=? WHERE id=?';
+                    
+            $row = $config->prepare($sql);
+            $row->execute($data);
+
+            // Redirect setelah berhasil insert
+            echo '<script>window.location="../../index.php?page=supplier/edit&supplier='.$id.'&success=edit-data"</script>';
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
 
     if (!empty($_GET['merk']) && $_GET['merk'] == 'edit') {
-        $id = htmlentities($_POST['id']);
-        $nama = htmlentities($_POST['nama']);
+
+        $id = isset($_POST['id']) ? htmlentities($_POST['id']) : '';
+        $kode_merk = isset($_POST['kode_merk']) ? htmlentities($_POST['kode_merk']) : '';
+        $nama_merk = isset($_POST['nama_merk']) ? htmlentities($_POST['nama_merk']) : '';
+        $tgl_input = date("Y-m-d H:i:s");
         $tgl_update = date("Y-m-d H:i:s");
-        $sql = 'UPDATE merk SET nama_merk=?, tgl_update=? WHERE id_merk=?';
-        $data = [$nama, $tgl_update, $id];
-        $row = $config->prepare($sql);
-        $row->execute($data);    
-        echo '<script>window.location="../../index.php?page=merk/edit&merk='.$id.'&success=edit-data"</script>';
+
+        try {
+            $data = [$nama_merk, $tgl_update, $id];
+        
+            // Query untuk INSERT data baru
+            $sql = 'UPDATE merk SET 
+                    nama_merk = :nama_merk, 
+                    tgl_update = :tgl_update 
+                    WHERE id = :id';
+
+            $stmt = $config->prepare($sql);
+            $stmt->bindParam(':nama_merk', $nama_merk, PDO::PARAM_STR);
+            $stmt->bindParam(':tgl_update', $tgl_update, PDO::PARAM_STR);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            // Redirect setelah berhasil insert
+            echo '<script>window.location="../../index.php?page=merk/edit&merk='.$id.'&success=edit-data"</script>';
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
     
     if (!empty($_GET['stok'])) {
@@ -73,6 +128,35 @@ if (!empty($_SESSION['admin'])) {
         $row -> execute($data);
         echo '<script>window.location="../../index.php?page=barang&success-stok=stok-data"</script>';
     }
+
+    if (!empty($_GET['satuan'])) {
+
+        $id = isset($_POST['id']) ? htmlentities($_POST['id']) : '';
+        $kode_satuan = isset($_POST['kode_satuan']) ? htmlentities($_POST['kode_satuan']) : '';
+        $nama_satuan = isset($_POST['nama_satuan']) ? htmlentities($_POST['nama_satuan']) : '';
+        $tgl_input = date("Y-m-d H:i:s");
+        $tgl_update = date("Y-m-d H:i:s");
+
+        try {
+            $data = [$kode_satuan, $nama_satuan, $tgl_update, $id];
+        
+            // Query untuk INSERT data baru
+            $sql = 'UPDATE satuan SET 
+                    kode_satuan=?, 
+                    nama_satuan=?,
+                    tgl_update=?
+                    WHERE id=?';
+                    
+            $row = $config->prepare($sql);
+            $row->execute($data);
+
+            // Redirect setelah berhasil insert
+            echo '<script>window.location="../../index.php?page=satuan/edit&satuan='.$id.'&success=edit-data"</script>';
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+    
 
     if (!empty($_GET['barang'])) {
 

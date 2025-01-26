@@ -6,7 +6,7 @@ if (!empty($_SESSION['admin'])) {
     if (!empty(htmlentities($_GET['kategori']))) {
         $id= htmlentities($_GET['id']);
         $data[] = $id;
-        $sql = 'DELETE FROM kategori WHERE id_kategori=?';
+        $sql = 'DELETE FROM kategori WHERE id=?';
         $row = $config -> prepare($sql);
         $row -> execute($data);
         echo '<script>window.location="../../index.php?page=kategori&&remove=hapus-data"</script>';
@@ -15,7 +15,7 @@ if (!empty($_SESSION['admin'])) {
     if (!empty(htmlentities($_GET['supplier']))) {
         $id= htmlentities($_GET['id']);
         $data[] = $id;
-        $sql = 'DELETE FROM supplier WHERE id_supplier=?';
+        $sql = 'DELETE FROM supplier WHERE id=?';
         $row = $config -> prepare($sql);
         $row -> execute($data);
         echo '<script>window.location="../../index.php?page=supplier&&remove=hapus-data"</script>';
@@ -24,10 +24,19 @@ if (!empty($_SESSION['admin'])) {
     if (!empty(htmlentities($_GET['merk']))) {
         $id= htmlentities($_GET['id']);
         $data[] = $id;
-        $sql = 'DELETE FROM merk WHERE id_merk=?';
+        $sql = 'DELETE FROM merk WHERE id=?';
         $row = $config -> prepare($sql);
         $row -> execute($data);
         echo '<script>window.location="../../index.php?page=merk&&remove=hapus-data"</script>';
+    }
+
+    if (!empty(htmlentities($_GET['satuan']))) {
+        $id= htmlentities($_GET['id']);
+        $data[] = $id;
+        $sql = 'DELETE FROM satuan WHERE id=?';
+        $row = $config->prepare($sql);
+        $row -> execute($data);
+        echo '<script>window.location="../../index.php?page=satuan&&remove=hapus-data"</script>';
     }
 
     if (!empty(htmlentities($_GET['barang']))) {

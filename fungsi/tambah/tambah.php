@@ -3,46 +3,93 @@
 session_start();
 if (!empty($_SESSION['admin'])) {
     require '../../config.php';
-    if (!empty($_GET['kategori'])) {
-        $nama= htmlentities(htmlentities($_POST['kategori']));
-        $tgl= date("j F Y, G:i");
-        $data[] = $nama;
-        $data[] = $tgl;
-        $sql = 'INSERT INTO kategori (nama_kategori,tgl_input) VALUES(?,?)';
-        $row = $config -> prepare($sql);
-        $row -> execute($data);
-        echo '<script>window.location="../../index.php?page=kategori&&success=tambah-data"</script>';
-    }
 
     if (!empty($_GET['supplier'])) {
-        $id = htmlentities($_POST['id']);
-        $nama= htmlentities($_POST['nama']);
-        $alamat= htmlentities($_POST['alamat']);
-        $telepon= htmlentities($_POST['telepon']);
-        $tgl = htmlentities($_POST['tgl']);
-        $data[] = $id;  
-        $data[] = $nama;
-        $data[] = $alamat;
-        $data[] = $telepon;
-        $data[] = $tgl;
-        $sql = 'INSERT INTO supplier (id_supplier, nama_supplier, alamat, telepon, tgl_input) VALUES(?,?,?,?,?)';
-        $row = $config -> prepare($sql);
-        $row -> execute($data);
-        echo '<script>window.location="../../index.php?page=supplier&&success=tambah-data"</script>';
+
+        $kode_supplier = isset($_POST['kode_supplier']) ? htmlentities($_POST['kode_supplier']) : '';
+        $nama_supplier = isset($_POST['nama_supplier']) ? htmlentities($_POST['nama_supplier']) : '';
+        $alamat = isset($_POST['alamat']) ? htmlentities($_POST['alamat']) : '';
+        $telepon = isset($_POST['telepon']) ? htmlentities($_POST['telepon']) : '';
+        $tgl_input = date("Y-m-d H:i:s");
+        $tgl_update = date("Y-m-d H:i:s");
+
+        try {
+            $data = [$kode_supplier, $nama_supplier, $alamat, $telepon, $tgl_input, $tgl_update];
+        
+            // Query untuk INSERT data baru
+            $sql = 'INSERT INTO supplier (
+                kode_supplier, 
+                nama_supplier,
+                alamat,
+                telepon,
+                tgl_input,
+                tgl_update
+            ) VALUES (?, ?, ?, ?, ?, ?)';
+                    
+            $row = $config->prepare($sql);
+            $row->execute($data);
+
+            // Redirect setelah berhasil insert
+            echo '<script>window.location="../../index.php?page=supplier&success=tambah-data"</script>';
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
 
     if (!empty($_GET['merk'])) {
-        $id = htmlentities($_POST['id']);
-        $nama= htmlentities($_POST['nama']);
-        $tgl = htmlentities($_POST['tgl']);
-        $data[] = $id;  
-        $data[] = $nama;
-        $data[] = $tgl;
-        $sql = 'INSERT INTO merk (id_merk, nama_merk, tgl_input) VALUES(?,?,?)';
-        $row = $config -> prepare($sql);
-        $row -> execute($data);
-        echo '<script>window.location="../../index.php?page=merk&&success=tambah-data"</script>';
+
+        $kode_merk = isset($_POST['kode_merk']) ? htmlentities($_POST['kode_merk']) : '';
+        $nama_merk = isset($_POST['nama_merk']) ? htmlentities($_POST['nama_merk']) : '';
+        $tgl_input = date("Y-m-d H:i:s");
+        $tgl_update = date("Y-m-d H:i:s");
+
+        try {
+            $data = [$kode_merk, $nama_merk, $tgl_input, $tgl_update];
+        
+            // Query untuk INSERT data baru
+            $sql = 'INSERT INTO merk (
+                kode_merk, 
+                nama_merk,
+                tgl_input,
+                tgl_update
+            ) VALUES (?, ?, ?, ?)';
+                    
+            $row = $config->prepare($sql);
+            $row->execute($data);
+
+            // Redirect setelah berhasil insert
+            echo '<script>window.location="../../index.php?page=merk&&success=tambah-data"</script>';
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
+
+    if (!empty($_GET['kategori'])) {
+
+        $nama_kategori = isset($_POST['nama_kategori']) ? htmlentities($_POST['nama_kategori']) : '';
+        $tgl_input = date("Y-m-d H:i:s");
+        $tgl_update = date("Y-m-d H:i:s");
+
+        try {
+            $data = [$nama_kategori, $tgl_input, $tgl_update];
+        
+            // Query untuk INSERT data baru
+            $sql = 'INSERT INTO kategori (
+                nama_kategori, 
+                tgl_input,
+                tgl_update
+            ) VALUES (?, ?, ?)';
+                    
+            $row = $config->prepare($sql);
+            $row->execute($data);
+
+            // Redirect setelah berhasil insert
+            echo '<script>window.location="../../index.php?page=kategori&&success=tambah-data"</script>';
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+
 
     if (!empty($_GET['barang'])) {
 
@@ -128,6 +175,34 @@ if (!empty($_SESSION['admin'])) {
 
             // Redirect setelah berhasil insert
             echo '<script>window.location="../../index.php?page=barang&success=tambah-data"</script>';
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+
+    if (!empty($_GET['satuan'])) {
+
+        $kode_satuan = isset($_POST['kode_satuan']) ? htmlentities($_POST['kode_satuan']) : '';
+        $nama_satuan = isset($_POST['nama_satuan']) ? htmlentities($_POST['nama_satuan']) : '';
+        $tgl_input = date("Y-m-d H:i:s");
+        $tgl_update = date("Y-m-d H:i:s");
+
+        try {
+            $data = [$kode_satuan, $nama_satuan, $tgl_input, $tgl_update];
+        
+            // Query untuk INSERT data baru
+            $sql = 'INSERT INTO satuan (
+                kode_satuan, 
+                nama_satuan,
+                tgl_input,
+                tgl_update
+            ) VALUES (?, ?, ?, ?)';
+                    
+            $row = $config->prepare($sql);
+            $row->execute($data);
+
+            // Redirect setelah berhasil insert
+            echo '<script>window.location="../../index.php?page=satuan&success=tambah-data"</script>';
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
         }

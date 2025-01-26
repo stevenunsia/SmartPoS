@@ -46,7 +46,7 @@
                     <thead>
                         <tr style="background:#DFF0D8;color:#333;">
                             <th>No.</th>
-                            <th>ID Barang</th>
+                            <th>Kode Barang</th>
                             <th>Gambar</th>
                             <th>Kategori</th>
                             <th>Nama Barang</th>
