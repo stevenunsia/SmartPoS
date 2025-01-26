@@ -33,7 +33,7 @@ if (!empty($_SESSION['admin'])) {
     if (!empty(htmlentities($_GET['barang']))) {
         $id= htmlentities($_GET['id']);
         $data[] = $id;
-        $sql = 'DELETE FROM barang WHERE id_barang=?';
+        $sql = 'DELETE FROM barang WHERE id=?';
         $row = $config -> prepare($sql);
         $row -> execute($data);
         echo '<script>window.location="../../index.php?page=barang&&remove=hapus-data"</script>';

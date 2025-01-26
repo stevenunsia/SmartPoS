@@ -113,6 +113,14 @@ class view
         return $hasil;
     }
 
+    public function satuan() {
+        $sql = "SELECT * FROM satuan";
+        $row = $this->db->prepare($sql);
+        $row->execute();
+        $hasil = $row->fetchAll();
+        return $hasil;
+    }
+
     public function merk_cari($cari)
     {
         $sql = "select*from merk
@@ -183,11 +191,12 @@ class view
 
     public function barang()
     {
-        $sql = "select barang.*, kategori.id_kategori, kategori.nama_kategori, merk.nama_merk, supplier.nama_supplier
+        $sql = "select barang.*, kategori.nama_kategori, merk.nama_merk, supplier.nama_supplier, satuan.nama_satuan
                 from barang 
-                inner join kategori on barang.id_kategori = kategori.id_kategori 
-                left join supplier on barang.id_supplier = supplier.id_supplier 
-                left join merk on barang.merk = merk.id_merk 
+                left join kategori on barang.id_kategori = kategori.id 
+                left join supplier on barang.id_supplier = supplier.id 
+                left join merk on barang.id_merk = merk.id 
+                left join satuan on barang.id_satuan = satuan.id 
                 ORDER BY id DESC";
         $row = $this-> db -> prepare($sql);
         $row -> execute();
@@ -197,8 +206,9 @@ class view
 
     public function barang_stok()
     {
-        $sql = "select barang.*, kategori.id_kategori, kategori.nama_kategori
-                from barang inner join kategori on barang.id_kategori = kategori.id_kategori 
+        $sql = "select barang.*, kategori.nama_kategori
+                from barang 
+                left join kategori on barang.id_kategori = kategori.id
                 where stok <= 3 
                 ORDER BY id DESC";
         $row = $this-> db -> prepare($sql);
@@ -210,12 +220,13 @@ class view
     
     public function barang_edit($id)
     {
-        $sql = "select barang.*, kategori.id_kategori, kategori.nama_kategori, merk.nama_merk, supplier.nama_supplier
+        $sql = "select barang.*, kategori.nama_kategori, merk.nama_merk, supplier.nama_supplier, satuan.nama_satuan
                 from barang 
-                inner join kategori on barang.id_kategori = kategori.id_kategori
-                left join supplier on barang.id_supplier = supplier.id_supplier 
-                left join merk on barang.merk = merk.id_merk 
-                where id_barang=?";
+                left join kategori on barang.id_kategori = kategori.id 
+                left join supplier on barang.id_supplier = supplier.id 
+                left join merk on barang.id_merk = merk.id 
+                left join satuan on barang.id_satuan = satuan.id 
+                where barang.id=?";
         $row = $this-> db -> prepare($sql);
         $row -> execute(array($id));
         $hasil = $row -> fetch();
@@ -225,8 +236,14 @@ class view
     public function barang_cari($cari)
     {
         $sql = "select barang.*, kategori.id_kategori, kategori.nama_kategori
-                from barang inner join kategori on barang.id_kategori = kategori.id_kategori
-                where id_barang like '%$cari%' or nama_barang like '%$cari%' or merk like '%$cari%'";
+                from barang
+                left join kategori on barang.id_kategori = kategori.id 
+                left join supplier on barang.id_supplier = supplier.id 
+                left join merk on barang.id_merk = merk.id 
+                left join satuan on barang.id_satuan = satuan.id 
+                where barang.kode_barang like '%$cari%' or 
+                barang.nama_barang like '%$cari%' or 
+                merk.nama_merk like '%$cari%'";
         $row = $this-> db -> prepare($sql);
         $row -> execute();
         $hasil = $row -> fetchAll();
@@ -240,14 +257,14 @@ class view
         $row -> execute();
         $hasil = $row -> fetch();
 
-        $urut = substr($hasil['id_barang'], 2, 3);
+        $urut = substr($hasil['kode_barang'], 2, 3);
         $tambah = (int) $urut + 1;
         if (strlen($tambah) == 1) {
             $format = 'BR00'.$tambah.'';
         } elseif (strlen($tambah) == 2) {
             $format = 'BR0'.$tambah.'';
         } else {
-            $ex = explode('BR', $hasil['id_barang']);
+            $ex = explode('BR', $hasil['kode_barang']);
             $no = (int) $ex[1] + 1;
             $format = 'BR'.$no.'';
         }

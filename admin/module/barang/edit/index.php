@@ -5,6 +5,8 @@
       *********************************************************************************************************************************************************** -->
  <!--main content start-->
  <?php 
+ error_reporting(E_ALL);
+ ini_set('display_errors', 1);
 	$id = $_GET['barang'];
 	$hasil = $lihat -> barang_edit($id);
 ?>
@@ -23,16 +25,17 @@
 <div class="card card-body">
 	<div class="table-responsive">
 		<table class="table table-striped">
-			<form action="fungsi/edit/edit.php?barang=edit" method="POST">
+			<form action="fungsi/edit/edit.php?barang=edit" method="POST" enctype="multipart/form-data">
 				<tr>
 					<td>ID Barang</td>
-					<td><input type="text" readonly="readonly" class="form-control" value="<?php echo $hasil['id_barang'];?>"
-							name="id"></td>
+					<td><input type="text" readonly="readonly" class="form-control" value="<?php echo $hasil['kode_barang'];?>"
+							name="kode_barang"></td>
+							<input type="hidden" name="id" value="<?php echo $hasil['id'];?>">
 				</tr>
 				<tr>
 					<td>Kategori</td>
 					<td>
-						<select name="id_kategori" class="form-control">
+						<select name="id_kategori" class="form-control" required>
 							<option value="">Pilih Kategori</option>
 							<?php  
 							$kat = $lihat->kategori(); 
@@ -40,13 +43,32 @@
 
 							foreach($kat as $isi) {  
 								// Cek apakah kategori saat ini adalah yang terpilih
-								$selected = ($isi['id_kategori'] == $selectedKategori) ? 'selected' : ''; 
+								$selected = ($isi['id'] == $selectedKategori) ? 'selected' : ''; 
 							?>
-								<option value="<?php echo $isi['id_kategori']; ?>" <?php echo $selected; ?>>
+								<option value="<?php echo $isi['id']; ?>" <?php echo $selected; ?>>
 									<?php echo $isi['nama_kategori']; ?>
 								</option>
 							<?php } ?>
 						</select>
+					</td>
+				</tr>
+
+				<tr>
+					<td>Gambar ..</td>
+					<td>
+						<input type="file" name="upload_gambar" class="form-control">
+						
+						<!-- Tempat untuk menampilkan thumbnail gambar -->
+						<?php
+						$upload_gambar = isset($hasil['upload_gambar']) ? $hasil['upload_gambar'] : '';
+						if($upload_gambar) {
+							?>
+							<br/>
+							<img src="<?php echo '/assets/uploads/images/'.$hasil['upload_gambar'];?>" alt="Thumbnail Preview" style="max-width: 200px; max-height: 200px;" />
+							<?php 
+						}
+						?>
+						
 					</td>
 				</tr>
 
@@ -65,9 +87,9 @@
 
 							foreach ($kat as $isi) {  
 								// Cek apakah supplier saat ini adalah yang terpilih
-								$selected = ($isi['id_supplier'] == $selectedSupplier) ? 'selected' : ''; 
+								$selected = ($isi['id'] == $selectedSupplier) ? 'selected' : ''; 
 							?>
-								<option value="<?php echo $isi['id_supplier']; ?>" <?php echo $selected; ?>>
+								<option value="<?php echo $isi['id']; ?>" <?php echo $selected; ?>>
 									<?php echo $isi['nama_supplier']; ?>
 								</option>
 							<?php } ?>
@@ -80,7 +102,7 @@
 				<tr>
 					<td>Merk</td>
 					<td>
-						<select name="merk" class="form-control" required>
+						<select name="id_merk" class="form-control" required>
 							<option value="">Pilih Merk</option>
 							<?php  
 							$merkList = $lihat->merk(); 
@@ -88,9 +110,9 @@
 
 							foreach ($merkList as $isi) {  
 								// Cek apakah merk saat ini adalah yang terpilih
-								$selected = ($isi['merk'] == $selectedMerk) ? 'selected' : ''; 
+								$selected = ($isi['id'] == $selectedMerk) ? 'selected' : ''; 
 							?>
-								<option value="<?php echo $isi['id_merk']; ?>" <?php echo $selected; ?>>
+								<option value="<?php echo $isi['id']; ?>" <?php echo $selected; ?>>
 									<?php echo $isi['nama_merk']; ?>
 								</option>
 							<?php } ?>
@@ -106,18 +128,28 @@
 					<td>Harga Jual</td>
 					<td><input type="number" class="form-control" value="<?php echo $hasil['harga_jual'];?>" name="harga_jual"></td>
 				</tr>
+
 				<tr>
-					<td>Satuan Barang</td>
+					<td>Satuan</td>
 					<td>
-						<?php $selected = ($hasil['satuan_barang'] == 'PCS') ? 'selected' : '';  ?>
-						<select name="satuan_barang" class="form-control">
-							<option value="<?php echo $hasil['satuan_barang'];?>"><?php echo $hasil['satuan_barang'];?>
-							</option>
-							<option value="#">Pilih Satuan</option>
-							<option value="PCS" <?php echo $selected;?> >PCS</option>
+						<select name="id_satuan" class="form-control" required>
+							<option value="">Pilih Satuan</option>
+							<?php  
+							$satuanList = $lihat->satuan(); 
+							$selectedSatuan = isset($hasil['id_satuan']) ? $hasil['id_satuan'] : ''; // Ambil ID merk yang terpilih sebelumnya
+
+							foreach ($satuanList as $isi) {  
+								// Cek apakah merk saat ini adalah yang terpilih
+								$selected = ($isi['id'] == $selectedSatuan) ? 'selected' : ''; 
+							?>
+								<option value="<?php echo $isi['id']; ?>" <?php echo $selected; ?>>
+									<?php echo $isi['nama_satuan']; ?>
+								</option>
+							<?php } ?>
 						</select>
 					</td>
 				</tr>
+
 				<tr>
 					<td>Stok</td>
 					<td><input type="number" class="form-control" value="<?php echo $hasil['stok'];?>" name="stok"></td>

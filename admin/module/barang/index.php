@@ -47,6 +47,7 @@
                         <tr style="background:#DFF0D8;color:#333;">
                             <th>No.</th>
                             <th>ID Barang</th>
+                            <th>Gambar</th>
                             <th>Kategori</th>
                             <th>Nama Barang</th>
                             <th>Supplier</th>
@@ -75,7 +76,17 @@
 					?>
                         <tr>
                             <td><?php echo $no;?></td>
-                            <td><?php echo $isi['id_barang'];?></td>
+                            <td><?php echo $isi['kode_barang'];?></td>
+                            <td>
+                            <?php
+                            $upload_gambar = isset($isi['upload_gambar']) ? $isi['upload_gambar'] : '';
+                            if($upload_gambar) {
+                                ?>
+                                    <img src="<?php echo '/assets/uploads/images/'.$isi['upload_gambar'];?>" alt="Thumbnail Preview" style="max-width: 200px; max-height: 200px;" />
+                                <?php 
+                            }
+                            ?>
+                            </td>
                             <td><?php echo $isi['nama_kategori'];?></td>
                             <td><?php echo $isi['nama_barang'];?></td>
                             <td><?php echo $isi['nama_supplier'];?></td>
@@ -89,27 +100,27 @@
                             </td>
                             <td>Rp.<?php echo number_format($isi['harga_beli']);?>,-</td>
                             <td>Rp.<?php echo number_format($isi['harga_jual']);?>,-</td>
-                            <td> <?php echo $isi['satuan_barang'];?></td>
+                            <td> <?php echo $isi['nama_satuan'];?></td>
                             <td>
                                 <?php if($isi['stok'] <=  '3'){?>
                                 <form method="POST" action="fungsi/edit/edit.php?stok=edit">
                                     <input type="text" name="restok" class="form-control">
-                                    <input type="hidden" name="id" value="<?php echo $isi['id_barang'];?>"
+                                    <input type="hidden" name="id" value="<?php echo $isi['id'];?>"
                                         class="form-control">
                                     <button class="btn btn-primary btn-sm">
                                         Restok
                                     </button>
-                                    <a href="fungsi/hapus/hapus.php?barang=hapus&id=<?php echo $isi['id_barang'];?>"
+                                </form>
+                                <a href="fungsi/hapus/hapus.php?barang=hapus&id=<?php echo $isi['id'];?>"
                                         onclick="javascript:return confirm('Hapus Data barang ?');">
                                         <button class="btn btn-danger btn-sm">Hapus</button></a>
-                                </form>
                                 <?php }else{?>
-                                <a href="index.php?page=barang/details&barang=<?php echo $isi['id_barang'];?>"><button
+                                <a href="index.php?page=barang/details&barang=<?php echo $isi['id'];?>"><button
                                         class="btn btn-primary btn-xs">View</button></a>
 
-                                <a href="index.php?page=barang/edit&barang=<?php echo $isi['id_barang'];?>"><button
+                                <a href="index.php?page=barang/edit&barang=<?php echo $isi['id'];?>"><button
                                         class="btn btn-warning btn-xs">Edit</button></a>
-                                <a href="fungsi/hapus/hapus.php?barang=hapus&id=<?php echo $isi['id_barang'];?>"
+                                <a href="fungsi/hapus/hapus.php?barang=hapus&id=<?php echo $isi['id'];?>"
                                     onclick="javascript:return confirm('Hapus Data barang ?');"><button
                                         class="btn btn-danger btn-xs">Hapus</button></a>
                                 <?php }?>
@@ -122,15 +133,16 @@
 						}
 					?>
                     </tbody>
-                    <tfoot>
+                    <!-- <tfoot>
                         <tr>
-                            <th colspan="5">Total </td>
+                            <th colspan="6">Total </td>
                             <th><?php echo $totalStok;?></td>
                             <th>Rp.<?php echo number_format($totalBeli);?>,-</td>
                             <th>Rp.<?php echo number_format($totalJual);?>,-</td>
                             <th colspan="2" style="background:#ddd"></th>
                         </tr>
-                    </tfoot>
+                        
+                    </tfoot> -->
                 </table>
             </div>
         </div>
@@ -146,7 +158,7 @@
                         <h5 class="modal-title"><i class="fa fa-plus"></i> Tambah Barang</h5>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
-                    <form action="fungsi/tambah/tambah.php?barang=tambah" method="POST">
+                    <form action="fungsi/tambah/tambah.php?barang=tambah" method="POST" enctype="multipart/form-data">
                         <div class="modal-body">
                             <table class="table table-striped bordered">
                                 <?php
@@ -155,15 +167,21 @@
                                 <tr>
                                     <td>ID Barang</td>
                                     <td><input type="text" readonly="readonly" required value="<?php echo $format;?>"
-                                            class="form-control" name="id"></td>
+                                            class="form-control" name="kode_barang"></td>
+                                </tr>
+                                <tr>
+                                    <td>Gambar</td>
+                                    <td><input type="file" class="form-control" name="upload_gambar" accept="image/*"></td>
+                                    <br>
+                                    
                                 </tr>
                                 <tr>
                                     <td>Kategori</td>
                                     <td>
                                         <select name="id_kategori" class="form-control" required>
-                                            <option value="#">Pilih Kategori</option>
+                                            <option value="">Pilih Kategori</option>
                                             <?php  $kat = $lihat -> kategori(); foreach($kat as $isi){ 	?>
-                                            <option value="<?php echo $isi['id_kategori'];?>">
+                                            <option value="<?php echo $isi['id'];?>">
                                                 <?php echo $isi['nama_kategori'];?></option>
                                             <?php }?>
                                         </select>
@@ -180,7 +198,7 @@
                                         <select name="id_supplier" class="form-control" required>
                                             <option value="">Pilih Supplier</option>
                                             <?php  $kat = $lihat -> supplier(); foreach($kat as $isi){ 	?>
-                                            <option value="<?php echo $isi['id_supplier'];?>">
+                                            <option value="<?php echo $isi['id'];?>">
                                                 <?php echo $isi['nama_supplier'];?></option>
                                             <?php }?>
                                         </select>
@@ -190,10 +208,10 @@
                                 <tr>
                                     <td>Merk Barang</td>
                                     <td>
-                                        <select name="merk" class="form-control" required>
+                                        <select name="id_merk" class="form-control" required>
                                             <option value="">Pilih Merk Barang</option>
                                             <?php  $kat = $lihat -> merk(); foreach($kat as $isi){ 	?>
-                                            <option value="<?php echo $isi['id_merk'];?>">
+                                            <option value="<?php echo $isi['id'];?>">
                                                 <?php echo $isi['nama_merk'];?></option>
                                             <?php }?>
                                         </select>
@@ -213,9 +231,12 @@
                                 <tr>
                                     <td>Satuan Barang</td>
                                     <td>
-                                        <select name="satuan_barang" class="form-control" required>
-                                            <option value="#">Pilih Satuan</option>
-                                            <option value="PCS">PCS</option>
+                                        <select name="id_satuan" class="form-control" required>
+                                            <option value="">Pilih Satuan Barang</option>
+                                            <?php  $kat = $lihat -> satuan(); foreach($kat as $isi){ 	?>
+                                            <option value="<?php echo $isi['id'];?>">
+                                                <?php echo $isi['nama_satuan'];?></option>
+                                            <?php }?>
                                         </select>
                                     </td>
                                 </tr>

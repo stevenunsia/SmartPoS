@@ -59,7 +59,7 @@ if (!empty($_SESSION['admin'])) {
         $restok = htmlentities($_POST['restok']);
         $id = htmlentities($_POST['id']);
         $dataS[] = $id;
-        $sqlS = 'select*from barang WHERE id_barang=?';
+        $sqlS = 'select*from barang WHERE id=?';
         $rowS = $config -> prepare($sqlS);
         $rowS -> execute($dataS);
         $hasil = $rowS -> fetch();
@@ -68,7 +68,7 @@ if (!empty($_SESSION['admin'])) {
 
         $data[] = $stok;
         $data[] = $id;
-        $sql = 'UPDATE barang SET stok=? WHERE id_barang=?';
+        $sql = 'UPDATE barang SET stok=? WHERE id=?';
         $row = $config -> prepare($sql);
         $row -> execute($data);
         echo '<script>window.location="../../index.php?page=barang&success-stok=stok-data"</script>';
@@ -77,21 +77,78 @@ if (!empty($_SESSION['admin'])) {
     if (!empty($_GET['barang'])) {
 
         $id = isset($_POST['id']) ? htmlentities($_POST['id']) : '';
+        $kode_barang = isset($_POST['kode_barang']) ? htmlentities($_POST['kode_barang']) : '';
+        $nama_barang = isset($_POST['nama_barang']) ? htmlentities($_POST['nama_barang']) : '';
         $id_kategori = isset($_POST['id_kategori']) ? htmlentities($_POST['id_kategori']) : '';
         $id_supplier = isset($_POST['id_supplier']) ? htmlentities($_POST['id_supplier']) : '';
-        $nama_barang = isset($_POST['nama_barang']) ? htmlentities($_POST['nama_barang']) : '';
-        $merk = isset($_POST['merk']) ? htmlentities($_POST['merk']) : '';
+        $id_merk = isset($_POST['id_merk']) ? htmlentities($_POST['id_merk']) : '';
+        $id_satuan = isset($_POST['id_satuan']) ? htmlentities($_POST['id_satuan']) : '';
         $harga_beli = isset($_POST['harga_beli']) ? htmlentities($_POST['harga_beli']) : '';
         $harga_jual = isset($_POST['harga_jual']) ? htmlentities($_POST['harga_jual']) : '';
-        $satuan_barang = isset($_POST['satuan_barang']) ? htmlentities($_POST['satuan_barang']) : '';
         $stok = isset($_POST['stok']) ? htmlentities($_POST['stok']) : '';
         $tgl_update = date("Y-m-d H:i:s");
-    
-        $data = [$id_kategori, $id_supplier, $nama_barang, $merk, $harga_beli, $harga_jual, $satuan_barang, $stok, $tgl_update, $id];
-    
+        
+        $upload_gambar = '';
         try {
-            $sql = 'UPDATE barang SET id_kategori=?, id_supplier=?, nama_barang=?, merk=?, 
-                    harga_beli=?, harga_jual=?, satuan_barang=?, stok=?, tgl_update=? WHERE id_barang=?';
+            // echo "masuk mau upload";
+            // echo var_export($_FILES);
+            if (isset($_FILES['upload_gambar']) && $_FILES['upload_gambar']['error'] == 0) {
+                // echo ", masuk upload";
+                $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];  // Allowed image extensions
+                $file_name = $_FILES['upload_gambar']['name'];
+                $file_tmp = $_FILES['upload_gambar']['tmp_name'];
+                $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                
+                // echo ", ".$file_ext;
+                // Check file extension
+                if (in_array($file_ext, $allowed_extensions)) {
+                    // echo ", allow extension";
+                    // Set upload directory and generate unique filename
+                    $upload_dir = $_SERVER['DOCUMENT_ROOT'] .'/assets/uploads/images/'; // Set your upload folder path
+            
+                    // Check if directory exists, if not create it
+                    if (!is_dir($upload_dir)) {
+                        // Attempt to create the directory with proper permissions
+                        mkdir($upload_dir, 0755, true);
+                    }
+                    
+                    $new_file_name = uniqid() . '.' . $file_ext;
+
+                    // Move the uploaded file to the desired folder
+                    echo ", mau move upload";
+                    if (move_uploaded_file($file_tmp, $upload_dir . $new_file_name)) {
+                        // echo ", move upload sukses";
+                        $upload_gambar = $new_file_name;  // Save the path in the database
+                    } else {
+                        echo "Error: File upload failed.";
+                        exit;
+                    }
+                } else {
+                    echo "Error: Invalid file extension.";
+                    exit;
+                }
+                // echo ", upload fungsi end;"; die();
+            }
+            // else{
+            //     echo ", tidak ada yang musti di upload fungsi end;"; die();
+            // }
+
+            $data = [$kode_barang, $nama_barang, $id_kategori, $id_supplier, $id_merk, $id_satuan, $harga_beli, $harga_jual, $stok, $upload_gambar, $tgl_update, $id];
+    
+        
+            $sql = 'UPDATE barang SET 
+                        kode_barang=?, 
+                        nama_barang=?, 
+                        id_kategori=?, 
+                        id_supplier=?, 
+                        id_merk=?, 
+                        id_satuan=?, 
+                        harga_beli=?, 
+                        harga_jual=?, 
+                        stok=?, 
+                        upload_gambar=?,
+                        tgl_update=?
+                    WHERE id=?';
             $row = $config->prepare($sql);
             $row->execute($data);
             // $row->debugDumpParams();
