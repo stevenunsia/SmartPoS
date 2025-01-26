@@ -35,8 +35,12 @@
 				<td><?php echo $hasil['nama_barang'];?></td>
 			</tr>
 			<tr>
+				<td>Nama Barang</td>
+				<td><?php echo $hasil['nama_supplier'];?></td>
+			</tr>
+			<tr>
 				<td>Merk Barang</td>
-				<td><?php echo $hasil['merk'];?></td>
+				<td><?php echo $hasil['nama_merk'];?></td>
 			</tr>
 			<tr>
 				<td>Harga Beli</td>

@@ -45,32 +45,36 @@ if (!empty($_SESSION['admin'])) {
     }
 
     if (!empty($_GET['barang'])) {
+        
         $id = htmlentities($_POST['id']);
-        $kategori = htmlentities($_POST['kategori']);
-        $nama = htmlentities($_POST['nama']);
-        $supplier = htmlentities($_POST['supplier']);
-        $merk = htmlentities($_POST['merk']);
-        $beli = htmlentities($_POST['beli']);
-        $jual = htmlentities($_POST['jual']);
-        $satuan = htmlentities($_POST['satuan']);
-        $stok = htmlentities($_POST['stok']);
-        $tgl = htmlentities($_POST['tgl']);
+        $id_kategori = isset($_POST['id_kategori']) ? htmlentities($_POST['id_kategori']) : '';
+        $id_supplier = isset($_POST['id_supplier']) ? htmlentities($_POST['id_supplier']) : '';
+        $nama_barang = isset($_POST['nama_barang']) ? htmlentities($_POST['nama_barang']) : '';
+        $merk = isset($_POST['merk']) ? htmlentities($_POST['merk']) : '';
+        $harga_beli = isset($_POST['harga_beli']) ? htmlentities($_POST['harga_beli']) : '';
+        $harga_jual = isset($_POST['harga_jual']) ? htmlentities($_POST['harga_jual']) : '';
+        $satuan_barang = isset($_POST['satuan_barang']) ? htmlentities($_POST['satuan_barang']) : '';
+        $stok = isset($_POST['stok']) ? htmlentities($_POST['stok']) : '';
+        $tgl_input = date("Y-m-d H:i:s");
+        $tgl_update = date("Y-m-d H:i:s");
 
-        $data[] = $id;
-        $data[] = $kategori;
-        $data[] = $nama;
-        $data[] = $supplier;
-        $data[] = $merk;
-        $data[] = $beli;
-        $data[] = $jual;
-        $data[] = $satuan;
-        $data[] = $stok;
-        $data[] = $tgl;
-        $sql = 'INSERT INTO barang (id_barang,id_kategori,nama_barang,nama_supplier,merk,harga_beli,harga_jual,satuan_barang,stok,tgl_input) 
-			    VALUES (?,?,?,?,?,?,?,?,?,?) ';
-        $row = $config -> prepare($sql);
-        $row -> execute($data);
-        echo '<script>window.location="../../index.php?page=barang&success=tambah-data"</script>';
+       
+        $data = [$id, $id_kategori, $id_supplier, $nama_barang, $merk, $harga_beli, $harga_jual, $satuan_barang, $stok, $tgl_input, $tgl_update];
+
+        try {
+            // Query untuk INSERT data baru
+            $sql = 'INSERT INTO barang (id_barang, id_kategori, id_supplier, nama_barang, merk, 
+                    harga_beli, harga_jual, satuan_barang, stok, tgl_input, tgl_update) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                    
+            $row = $config->prepare($sql);
+            $row->execute($data);
+
+            // Redirect setelah berhasil insert
+            echo '<script>window.location="../../index.php?page=barang&success=tambah-data"</script>';
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
     
     if (!empty($_GET['jual'])) {
