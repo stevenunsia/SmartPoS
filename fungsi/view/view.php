@@ -70,26 +70,27 @@ class view
 
     public function supplier_id()
     {
-        $sql = 'SELECT * FROM supplier ORDER BY id_supplier DESC';
+        $sql = 'SELECT * FROM supplier ORDER BY id DESC';
         $row = $this-> db -> prepare($sql);
         $row -> execute();
         $hasil = $row -> fetch();
 
-        $urut = substr($hasil['id_supplier'], 2, 3);
+        $urut = substr($hasil['kode_supplier'], 2, 3);
         $tambah = (int) $urut + 1;
         if (strlen($tambah) == 1) {
             $format = 'SP00'.$tambah.'';
         } elseif (strlen($tambah) == 2) {
             $format = 'SP0'.$tambah.'';
         } else {
-            $ex = explode('SP', $hasil['id_supplier']);
+            $ex = explode('BR', $hasil['kode_supplier']);
             $no = (int) $ex[1] + 1;
             $format = 'SP'.$no.'';
         }
         return $format;
     }
+
     public function supplier_edit($id) {
-        $sql = "SELECT * FROM supplier WHERE id_supplier = ?";
+        $sql = "SELECT * FROM supplier WHERE id = ?";
         $row = $this->db->prepare($sql);
         $row->execute(array($id));
         $hasil = $row->fetch();
@@ -113,6 +114,14 @@ class view
         return $hasil;
     }
 
+    public function satuan() {
+        $sql = "SELECT * FROM satuan";
+        $row = $this->db->prepare($sql);
+        $row->execute();
+        $hasil = $row->fetchAll();
+        return $hasil;
+    }
+
     public function merk_cari($cari)
     {
         $sql = "select*from merk
@@ -125,19 +134,19 @@ class view
 
     public function merk_id()
     {
-        $sql = 'SELECT * FROM merk ORDER BY id_merk DESC';
+        $sql = 'SELECT * FROM merk ORDER BY id DESC';
         $row = $this-> db -> prepare($sql);
         $row -> execute();
         $hasil = $row -> fetch();
 
-        $urut = substr($hasil['id_merk'], 2, 3);
+        $urut = substr($hasil['kode_merk'], 2, 3);
         $tambah = (int) $urut + 1;
         if (strlen($tambah) == 1) {
             $format = 'MR00'.$tambah.'';
         } elseif (strlen($tambah) == 2) {
             $format = 'MR0'.$tambah.'';
         } else {
-            $ex = explode('MR', $hasil['id_merk']);
+            $ex = explode('MR', $hasil['kode_merk']);
             $no = (int) $ex[1] + 1;
             $format = 'MR'.$no.'';
         }
@@ -145,7 +154,7 @@ class view
     }
 
     public function merk_edit($id) {
-        $sql = "SELECT * FROM merk WHERE id_merk = ?";
+        $sql = "SELECT * FROM merk WHERE id = ?";
         $row = $this->db->prepare($sql);
         $row->execute(array($id));
         $hasil = $row->fetch();
@@ -183,8 +192,12 @@ class view
 
     public function barang()
     {
-        $sql = "select barang.*, kategori.id_kategori, kategori.nama_kategori
-                from barang inner join kategori on barang.id_kategori = kategori.id_kategori 
+        $sql = "select barang.*, kategori.nama_kategori, merk.nama_merk, supplier.nama_supplier, satuan.nama_satuan
+                from barang 
+                left join kategori on barang.id_kategori = kategori.id 
+                left join supplier on barang.id_supplier = supplier.id 
+                left join merk on barang.id_merk = merk.id 
+                left join satuan on barang.id_satuan = satuan.id 
                 ORDER BY id DESC";
         $row = $this-> db -> prepare($sql);
         $row -> execute();
@@ -194,8 +207,9 @@ class view
 
     public function barang_stok()
     {
-        $sql = "select barang.*, kategori.id_kategori, kategori.nama_kategori
-                from barang inner join kategori on barang.id_kategori = kategori.id_kategori 
+        $sql = "select barang.*, kategori.nama_kategori
+                from barang 
+                left join kategori on barang.id_kategori = kategori.id
                 where stok <= 3 
                 ORDER BY id DESC";
         $row = $this-> db -> prepare($sql);
@@ -207,20 +221,32 @@ class view
     
     public function barang_edit($id)
     {
-        $sql = "select barang.*, kategori.id_kategori, kategori.nama_kategori
-                from barang inner join kategori on barang.id_kategori = kategori.id_kategori
-                where id_barang=?";
+        $sql = "select barang.*, kategori.nama_kategori, merk.nama_merk, supplier.nama_supplier, satuan.nama_satuan
+                from barang 
+                left join kategori on barang.id_kategori = kategori.id 
+                left join supplier on barang.id_supplier = supplier.id 
+                left join merk on barang.id_merk = merk.id 
+                left join satuan on barang.id_satuan = satuan.id 
+                where barang.id=?";
         $row = $this-> db -> prepare($sql);
         $row -> execute(array($id));
         $hasil = $row -> fetch();
         return $hasil;
     }
 
+    
+
     public function barang_cari($cari)
     {
         $sql = "select barang.*, kategori.id_kategori, kategori.nama_kategori
-                from barang inner join kategori on barang.id_kategori = kategori.id_kategori
-                where id_barang like '%$cari%' or nama_barang like '%$cari%' or merk like '%$cari%'";
+                from barang
+                left join kategori on barang.id_kategori = kategori.id 
+                left join supplier on barang.id_supplier = supplier.id 
+                left join merk on barang.id_merk = merk.id 
+                left join satuan on barang.id_satuan = satuan.id 
+                where barang.kode_barang like '%$cari%' or 
+                barang.nama_barang like '%$cari%' or 
+                merk.nama_merk like '%$cari%'";
         $row = $this-> db -> prepare($sql);
         $row -> execute();
         $hasil = $row -> fetchAll();
@@ -234,23 +260,33 @@ class view
         $row -> execute();
         $hasil = $row -> fetch();
 
-        $urut = substr($hasil['id_barang'], 2, 3);
+        $urut = substr($hasil['kode_barang'], 2, 3);
         $tambah = (int) $urut + 1;
         if (strlen($tambah) == 1) {
             $format = 'BR00'.$tambah.'';
         } elseif (strlen($tambah) == 2) {
             $format = 'BR0'.$tambah.'';
         } else {
-            $ex = explode('BR', $hasil['id_barang']);
+            $ex = explode('BR', $hasil['kode_barang']);
             $no = (int) $ex[1] + 1;
             $format = 'BR'.$no.'';
         }
         return $format;
     }
 
+    public function satuan_edit($id)
+    {
+        $sql = "select * from satuan
+                where id=?";
+        $row = $this-> db -> prepare($sql);
+        $row -> execute(array($id));
+        $hasil = $row -> fetch();
+        return $hasil;
+    }
+
     public function kategori_edit($id)
     {
-        $sql = "select*from kategori where id_kategori=?";
+        $sql = "select * from kategori where id=?";
         $row = $this-> db -> prepare($sql);
         $row -> execute(array($id));
         $hasil = $row -> fetch();
@@ -355,9 +391,9 @@ class view
 
     public function penjualan()
     {
-        $sql ="SELECT penjualan.* , barang.id_barang, barang.nama_barang, member.id_member,
+        $sql ="SELECT penjualan.* , barang.kode_barang, barang.nama_barang, member.id_member,
                 member.nm_member from penjualan 
-                left join barang on barang.id_barang=penjualan.id_barang 
+                left join barang on barang.kode_barang=penjualan.id_barang 
                 left join member on member.id_member=penjualan.id_member
                 ORDER BY id_penjualan";
         $row = $this-> db -> prepare($sql);

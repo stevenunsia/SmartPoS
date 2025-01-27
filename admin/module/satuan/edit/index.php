@@ -5,43 +5,37 @@
       *********************************************************************************************************************************************************** -->
  <!--main content start-->
  <?php 
-	$id = $_GET['supplier'];
-	$hasil = $lihat -> supplier_edit($id);
+ error_reporting(E_ALL);
+ ini_set('display_errors', 1);
+	$id = $_GET['satuan'];
+	$hasil = $lihat -> satuan_edit($id);
 ?>
- <a href="index.php?page=supplier" class="btn btn-primary mb-3"><i class="fa fa-angle-left"></i> Balik </a>
- <h4>Edit Data Supplier</h4>
+ <a href="index.php?page=satuan" class="btn btn-primary mb-3"><i class="fa fa-angle-left"></i> Balik </a>
+ <h4>Edit Satuan</h4>
  <?php if(isset($_GET['success'])){?>
  <div class="alert alert-success">
-     <p>Data Supplier di Update !</p>
+     <p>Data Stock di Update !</p>
  </div>
  <?php }?>
  <?php if(isset($_GET['remove'])){?>
  <div class="alert alert-danger">
-     <p>Data Berhasil Dihapus !</p>
+     <p>Data Berhasil di Hapus !</p>
  </div>
  <?php }?>
 <div class="card card-body">
 	<div class="table-responsive">
 		<table class="table table-striped">
-			<form action="fungsi/edit/edit.php?supplier=edit" method="POST">
-				<input type="hidden" name="id" value="<?php echo $hasil['id'];?>">
+			<form action="fungsi/edit/edit.php?satuan=edit" method="POST" enctype="multipart/form-data">
+				<input type="hidden"  class="form-control" name="id"  value="<?php echo $hasil['id'];?>">
 				<tr>
-					<td>Kode Supplier</td>
-					<td><input type="text" readonly="readonly" class="form-control" value="<?php echo $hasil['kode_supplier'];?>"
-							name="kode_supplier"></td>
+					<td>Kode Satuan</td>
+					<td><input type="text"  class="form-control" name="kode_satuan"  value="<?php echo $hasil['kode_satuan'];?>" required></td>
 				</tr>
 				<tr>
-					<td>Nama Supplier</td>
-					<td><input type="text" class="form-control" value="<?php echo $hasil['nama_supplier'];?>" name="nama_supplier"></td>
+					<td>Nama Satuan</td>
+					<td><input type="text"  class="form-control" name="nama_satuan"  value="<?php echo $hasil['nama_satuan'];?>" required></td>
 				</tr>
-				<tr>
-					<td>Alamat</td>
-					<td><input type="text" class="form-control" value="<?php echo $hasil['alamat'];?>" name="alamat"></td>
-				</tr>
-				<tr>
-					<td>Telepon</td>
-					<td><input type="text" class="form-control" value="<?php echo $hasil['telepon'];?>" name="telepon"></td>
-				</tr>
+				
 				<tr>
 					<td>Tanggal Update</td>
 					<td><input type="text" readonly="readonly" class="form-control" value="<?php echo  date("j F Y, G:i");?>"

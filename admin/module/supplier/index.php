@@ -40,16 +40,16 @@
 						?>
 								<tr>
 									<td><?php echo $no++; ?></td>
-									<td><?php echo $isi['id_supplier']; ?></td>
+									<td><?php echo $isi['kode_supplier']; ?></td>
 									<td><?php echo $isi['nama_supplier']; ?></td>
 									<td><?php echo $isi['alamat']; ?></td>
 									<td><?php echo $isi['telepon']; ?></td>
 									<td>																	
-										<a href="index.php?page=supplier/details&supplier=<?php echo $isi['id_supplier'];?>"><button
+										<a href="index.php?page=supplier/details&supplier=<?php echo $isi['id'];?>"><button
 												class="btn btn-primary btn-xs">View</button></a>
-										<a href="index.php?page=supplier/edit&supplier=<?php echo $isi['id_supplier'];?>"><button
+										<a href="index.php?page=supplier/edit&supplier=<?php echo $isi['id'];?>"><button
 												class="btn btn-warning btn-xs">Edit</button></a>
-										<a href="fungsi/hapus/hapus.php?supplier=hapus&id=<?php echo $isi['id_supplier'];?>"
+										<a href="fungsi/hapus/hapus.php?supplier=hapus&id=<?php echo $isi['id'];?>"
 											onclick="javascript:return confirm('Hapus Data Supplier ?');"><button
 												class="btn btn-danger btn-xs">Hapus</button></a>
 									</td>
@@ -80,17 +80,17 @@
                         <div class="modal-body">
                             <table class="table table-striped bordered">
                                 <?php
-									$format = $lihat -> supplier_id();
+									$format = $lihat->supplier_id();
 								?>
                                 <tr>
                                     <td>Kode Supplier</td>
                                     <td><input type="text" readonly="readonly" required value="<?php echo $format;?>"
-                                            class="form-control" name="id"></td>
+                                            class="form-control" name="kode_supplier"></td>
                                 </tr>
                                 <tr>
                                     <td>Nama Supplier</td>
                                     <td><input type="text" placeholder="Nama Supplier" required class="form-control"
-                                            name="nama"></td>
+                                            name="nama_supplier"></td>
                                 </tr>
                                 <tr>
                                     <td>Alamat</td>

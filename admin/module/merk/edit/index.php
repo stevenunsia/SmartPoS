@@ -24,14 +24,15 @@
 	<div class="table-responsive">
 		<table class="table table-striped">
 			<form action="fungsi/edit/edit.php?merk=edit" method="POST">
+				<input type="hidden" name="id" value="<?php echo $hasil['id'];?>">
 				<tr>
 					<td>Kode Merk</td>
-					<td><input type="text" readonly="readonly" class="form-control" value="<?php echo $hasil['id_merk'];?>"
-							name="id"></td>
+					<td><input type="text" readonly="readonly" class="form-control" value="<?php echo $hasil['kode_merk'];?>"
+							name="kode_merk"></td>
 				</tr>
 				<tr>
 					<td>Nama Merk</td>
-					<td><input type="text" class="form-control" value="<?php echo $hasil['nama_merk'];?>" name="nama"></td>
+					<td><input type="text" class="form-control" value="<?php echo $hasil['nama_merk'];?>" name="nama_merk"></td>
 				</tr>
 				<tr>
 					<td>Tanggal Update</td>

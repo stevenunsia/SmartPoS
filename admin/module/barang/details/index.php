@@ -23,20 +23,37 @@
 	<div class="table-responsive">
 		<table class="table table-striped">
 			<tr>
-				<td>ID Barang</td>
-				<td><?php echo $hasil['id_barang'];?></td>
+				<td>Kode Barang</td>
+				<td><?php echo $hasil['kode_barang'];?></td>
 			</tr>
 			<tr>
 				<td>Kategori</td>
 				<td><?php echo $hasil['nama_kategori'];?></td>
 			</tr>
 			<tr>
+				<td>Gambar</td>
+				<td><?php
+						$upload_gambar = isset($hasil['upload_gambar']) ? $hasil['upload_gambar'] : '';
+						if($upload_gambar) {
+							?>
+							
+							<img src="<?php echo '/assets/uploads/images/'.$hasil['upload_gambar'];?>" alt="Thumbnail Preview" style="max-width: 200px; max-height: 200px;" />
+							<?php 
+						}
+						?>
+				</td>
+			</tr>
+			<tr>
 				<td>Nama Barang</td>
 				<td><?php echo $hasil['nama_barang'];?></td>
 			</tr>
 			<tr>
+				<td>Nama Barang</td>
+				<td><?php echo $hasil['nama_supplier'];?></td>
+			</tr>
+			<tr>
 				<td>Merk Barang</td>
-				<td><?php echo $hasil['merk'];?></td>
+				<td><?php echo $hasil['nama_merk'];?></td>
 			</tr>
 			<tr>
 				<td>Harga Beli</td>
@@ -48,7 +65,7 @@
 			</tr>
 			<tr>
 				<td>Satuan Barang</td>
-				<td><?php echo $hasil['satuan_barang'];?></td>
+				<td><?php echo $hasil['nama_satuan'];?></td>
 			</tr>
 			<tr>
 				<td>Stok</td>

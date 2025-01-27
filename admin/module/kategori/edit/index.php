@@ -5,14 +5,14 @@
       *********************************************************************************************************************************************************** -->
  <!--main content start-->
  <?php 
-	$id = $_GET['supplier'];
-	$hasil = $lihat -> supplier_edit($id);
+	$id = $_GET['kategori'];
+	$hasil = $lihat -> kategori_edit($id);
 ?>
- <a href="index.php?page=supplier" class="btn btn-primary mb-3"><i class="fa fa-angle-left"></i> Balik </a>
- <h4>Edit Data Supplier</h4>
+ <a href="index.php?page=kategori" class="btn btn-primary mb-3"><i class="fa fa-angle-left"></i> Balik </a>
+ <h4>Edit Data Merk Barang</h4>
  <?php if(isset($_GET['success'])){?>
  <div class="alert alert-success">
-     <p>Data Supplier di Update !</p>
+     <p>Data Merk di Update !</p>
  </div>
  <?php }?>
  <?php if(isset($_GET['remove'])){?>
@@ -23,24 +23,11 @@
 <div class="card card-body">
 	<div class="table-responsive">
 		<table class="table table-striped">
-			<form action="fungsi/edit/edit.php?supplier=edit" method="POST">
+			<form action="fungsi/edit/edit.php?kategori=edit" method="POST">
 				<input type="hidden" name="id" value="<?php echo $hasil['id'];?>">
 				<tr>
-					<td>Kode Supplier</td>
-					<td><input type="text" readonly="readonly" class="form-control" value="<?php echo $hasil['kode_supplier'];?>"
-							name="kode_supplier"></td>
-				</tr>
-				<tr>
-					<td>Nama Supplier</td>
-					<td><input type="text" class="form-control" value="<?php echo $hasil['nama_supplier'];?>" name="nama_supplier"></td>
-				</tr>
-				<tr>
-					<td>Alamat</td>
-					<td><input type="text" class="form-control" value="<?php echo $hasil['alamat'];?>" name="alamat"></td>
-				</tr>
-				<tr>
-					<td>Telepon</td>
-					<td><input type="text" class="form-control" value="<?php echo $hasil['telepon'];?>" name="telepon"></td>
+					<td>Nama Kategori</td>
+					<td><input type="text" class="form-control" value="<?php echo $hasil['nama_kategori'];?>" name="nama_kategori"></td>
 				</tr>
 				<tr>
 					<td>Tanggal Update</td>

@@ -44,6 +44,7 @@
                 <a class="collapse-item" href="index.php?page=kategori">Data Kategori</a>
                 <a class="collapse-item" href="index.php?page=supplier">Data Supplier</a>
                 <a class="collapse-item" href="index.php?page=merk">Data Merk</a>
+                <a class="collapse-item" href="index.php?page=satuan">Data Satuan</a>
                 <!-- <a class="collapse-item" href="index.php?page=user">User</a> -->
             </div>
         </div>

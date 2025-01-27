@@ -38,14 +38,14 @@
 						?>
 								<tr>
 									<td><?php echo $no++; ?></td>
-									<td><?php echo $isi['id_merk']; ?></td>
+									<td><?php echo $isi['kode_merk']; ?></td>
 									<td><?php echo $isi['nama_merk']; ?></td>
 									<td>																	
-										<a href="index.php?page=merk/details&merk=<?php echo $isi['id_merk'];?>"><button
+										<a href="index.php?page=merk/details&merk=<?php echo $isi['id'];?>"><button
 												class="btn btn-primary btn-xs">View</button></a>
-										<a href="index.php?page=merk/edit&merk=<?php echo $isi['id_merk'];?>"><button
+										<a href="index.php?page=merk/edit&merk=<?php echo $isi['id'];?>"><button
 												class="btn btn-warning btn-xs">Edit</button></a>
-										<a href="fungsi/hapus/hapus.php?merk=hapus&id=<?php echo $isi['id_merk'];?>"
+										<a href="fungsi/hapus/hapus.php?merk=hapus&id=<?php echo $isi['id'];?>"
 											onclick="javascript:return confirm('Hapus Data Merk ?');"><button
 												class="btn btn-danger btn-xs">Hapus</button></a>
 									</td>
@@ -74,25 +74,25 @@
                     </div>
                     <form action="fungsi/tambah/tambah.php?merk=tambah" method="POST">
                         <div class="modal-body">
+                           
                             <table class="table table-striped bordered">
                                 <?php
 									$format = $lihat -> merk_id();
 								?>
                                 <tr>
-                                    <td>Kode Merk</td>
+                                    <td>ID Barang</td>
                                     <td><input type="text" readonly="readonly" required value="<?php echo $format;?>"
-                                            class="form-control" name="id"></td>
+                                            class="form-control" name="kode_merk"></td>
                                 </tr>
                                 <tr>
                                     <td>Nama Merk</td>
-                                    <td><input type="text" placeholder="Nama Merk" required class="form-control"
-                                            name="nama"></td>
+                                    <td><input type="text" placeholder="Nama Merk" class="form-control" name="nama_merk" required></td>
                                 </tr>
                                 <tr>
                                     <td>Tanggal Input</td>
-                                    <td><input type="text" required readonly="readonly" class="form-control"
-                                            value="<?php echo  date("j F Y, G:i");?>" name="tgl"></td>
+                                    <td><input type="text" readonly="readonly" class="form-control" value="<?php echo  date("j F Y, G:i");?>" name="tgl" required></td>
                                 </tr>
+                                <br>
                             </table>
                         </div>
                         <div class="modal-footer">

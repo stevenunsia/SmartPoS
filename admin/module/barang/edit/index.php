@@ -5,6 +5,8 @@
       *********************************************************************************************************************************************************** -->
  <!--main content start-->
  <?php 
+ error_reporting(E_ALL);
+ ini_set('display_errors', 1);
 	$id = $_GET['barang'];
 	$hasil = $lihat -> barang_edit($id);
 ?>
@@ -23,51 +25,131 @@
 <div class="card card-body">
 	<div class="table-responsive">
 		<table class="table table-striped">
-			<form action="fungsi/edit/edit.php?barang=edit" method="POST">
+			<form action="fungsi/edit/edit.php?barang=edit" method="POST" enctype="multipart/form-data">
 				<tr>
-					<td>ID Barang</td>
-					<td><input type="text" readonly="readonly" class="form-control" value="<?php echo $hasil['id_barang'];?>"
-							name="id"></td>
+					<td>Kode Barang</td>
+					<td><input type="text" readonly="readonly" class="form-control" value="<?php echo $hasil['kode_barang'];?>"
+							name="kode_barang"></td>
+							<input type="hidden" name="id" value="<?php echo $hasil['id'];?>">
 				</tr>
 				<tr>
 					<td>Kategori</td>
 					<td>
-						<select name="kategori" class="form-control">
-							<option value="<?php echo $hasil['id_kategori'];?>"><?php echo $hasil['nama_kategori'];?></option>
-							<option value="#">Pilih Kategori</option>
-							<?php  $kat = $lihat -> kategori(); foreach($kat as $isi){ 	?>
-							<option value="<?php echo $isi['id_kategori'];?>"><?php echo $isi['nama_kategori'];?></option>
-							<?php }?>
+						<select name="id_kategori" class="form-control" required>
+							<option value="">Pilih Kategori</option>
+							<?php  
+							$kat = $lihat->kategori(); 
+							$selectedKategori = $hasil['id_kategori']; // Ambil kategori yang terpilih dari hasil query
+
+							foreach($kat as $isi) {  
+								// Cek apakah kategori saat ini adalah yang terpilih
+								$selected = ($isi['id'] == $selectedKategori) ? 'selected' : ''; 
+							?>
+								<option value="<?php echo $isi['id']; ?>" <?php echo $selected; ?>>
+									<?php echo $isi['nama_kategori']; ?>
+								</option>
+							<?php } ?>
 						</select>
 					</td>
 				</tr>
+
+				<tr>
+					<td>Gambar ..</td>
+					<td>
+						<input type="file" name="upload_gambar" class="form-control">
+						
+						<!-- Tempat untuk menampilkan thumbnail gambar -->
+						<?php
+						$upload_gambar = isset($hasil['upload_gambar']) ? $hasil['upload_gambar'] : '';
+						if($upload_gambar) {
+							?>
+							<br/>
+							<img src="<?php echo '/assets/uploads/images/'.$hasil['upload_gambar'];?>" alt="Thumbnail Preview" style="max-width: 200px; max-height: 200px;" />
+							<?php 
+						}
+						?>
+						
+					</td>
+				</tr>
+
 				<tr>
 					<td>Nama Barang</td>
-					<td><input type="text" class="form-control" value="<?php echo $hasil['nama_barang'];?>" name="nama"></td>
+					<td><input type="text" class="form-control" value="<?php echo $hasil['nama_barang'];?>" name="nama_barang"></td>
 				</tr>
 				<tr>
-					<td>Merk Barang</td>
-					<td><input type="text" class="form-control" value="<?php echo $hasil['merk'];?>" name="merk"></td>
+					<td>Supplier</td>
+					<td>
+						<select name="id_supplier" class="form-control" required>
+							<option value="">Pilih Supplier</option>
+							<?php  
+							$kat = $lihat->supplier(); 
+							$selectedSupplier = isset($hasil['id_supplier']) ? $hasil['id_supplier'] : ''; // Ambil ID supplier yang terpilih sebelumnya
+
+							foreach ($kat as $isi) {  
+								// Cek apakah supplier saat ini adalah yang terpilih
+								$selected = ($isi['id'] == $selectedSupplier) ? 'selected' : ''; 
+							?>
+								<option value="<?php echo $isi['id']; ?>" <?php echo $selected; ?>>
+									<?php echo $isi['nama_supplier']; ?>
+								</option>
+							<?php } ?>
+						</select>
+					</td>
 				</tr>
+
+
+				
+				<tr>
+					<td>Merk</td>
+					<td>
+						<select name="id_merk" class="form-control" required>
+							<option value="">Pilih Merk</option>
+							<?php  
+							$merkList = $lihat->merk(); 
+							$selectedMerk = isset($hasil['id_merk']) ? $hasil['id_merk'] : ''; // Ambil ID merk yang terpilih sebelumnya
+
+							foreach ($merkList as $isi) {  
+								// Cek apakah merk saat ini adalah yang terpilih
+								$selected = ($isi['id'] == $selectedMerk) ? 'selected' : ''; 
+							?>
+								<option value="<?php echo $isi['id']; ?>" <?php echo $selected; ?>>
+									<?php echo $isi['nama_merk']; ?>
+								</option>
+							<?php } ?>
+						</select>
+					</td>
+				</tr>
+
 				<tr>
 					<td>Harga Beli</td>
-					<td><input type="number" class="form-control" value="<?php echo $hasil['harga_beli'];?>" name="beli"></td>
+					<td><input type="number" class="form-control" value="<?php echo $hasil['harga_beli'];?>" name="harga_beli"></td>
 				</tr>
 				<tr>
 					<td>Harga Jual</td>
-					<td><input type="number" class="form-control" value="<?php echo $hasil['harga_jual'];?>" name="jual"></td>
+					<td><input type="number" class="form-control" value="<?php echo $hasil['harga_jual'];?>" name="harga_jual"></td>
 				</tr>
+
 				<tr>
-					<td>Satuan Barang</td>
+					<td>Satuan</td>
 					<td>
-						<select name="satuan" class="form-control">
-							<option value="<?php echo $hasil['satuan_barang'];?>"><?php echo $hasil['satuan_barang'];?>
-							</option>
-							<option value="#">Pilih Satuan</option>
-							<option value="PCS">PCS</option>
+						<select name="id_satuan" class="form-control" required>
+							<option value="">Pilih Satuan</option>
+							<?php  
+							$satuanList = $lihat->satuan(); 
+							$selectedSatuan = isset($hasil['id_satuan']) ? $hasil['id_satuan'] : ''; // Ambil ID merk yang terpilih sebelumnya
+
+							foreach ($satuanList as $isi) {  
+								// Cek apakah merk saat ini adalah yang terpilih
+								$selected = ($isi['id'] == $selectedSatuan) ? 'selected' : ''; 
+							?>
+								<option value="<?php echo $isi['id']; ?>" <?php echo $selected; ?>>
+									<?php echo $isi['nama_satuan']; ?>
+								</option>
+							<?php } ?>
 						</select>
 					</td>
 				</tr>
+
 				<tr>
 					<td>Stok</td>
 					<td><input type="number" class="form-control" value="<?php echo $hasil['stok'];?>" name="stok"></td>
