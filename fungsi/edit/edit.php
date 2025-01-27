@@ -339,7 +339,7 @@ if (!empty($_SESSION['admin'])) {
         $id_barang = htmlentities($_POST['id_barang']);
         $jumlah = htmlentities($_POST['jumlah']);
 
-        $sql_tampil = "select *from barang where barang.id_barang=?";
+        $sql_tampil = "select *from barang where barang.kode_barang=?";
         $row_tampil = $config -> prepare($sql_tampil);
         $row_tampil -> execute(array($id_barang));
         $hasil = $row_tampil -> fetch();
@@ -364,9 +364,15 @@ if (!empty($_SESSION['admin'])) {
         $cari = trim(strip_tags($_POST['keyword']));
         if ($cari == '') {
         } else {
-            $sql = "select barang.*, kategori.id_kategori, kategori.nama_kategori
-					from barang inner join kategori on barang.id_kategori = kategori.id_kategori
-					where barang.id_barang like '%$cari%' or barang.nama_barang like '%$cari%' or barang.merk like '%$cari%'";
+            $sql = "select barang.*, kategori.nama_kategori, merk.nama_merk, supplier.nama_supplier, satuan.nama_satuan
+                    from barang 
+                    left join kategori on barang.id_kategori = kategori.id 
+                    left join supplier on barang.id_supplier = supplier.id 
+                    left join merk on barang.id_merk = merk.id 
+                    left join satuan on barang.id_satuan = satuan.id 
+					where barang.kode_barang like '%$cari%' or 
+                    barang.nama_barang like '%$cari%' or 
+                    merk.nama_merk like '%$cari%'";
             $row = $config -> prepare($sql);
             $row -> execute();
             $hasil1= $row -> fetchAll();
@@ -381,12 +387,12 @@ if (!empty($_SESSION['admin'])) {
 			</tr>
 		<?php foreach ($hasil1 as $hasil) {?>
 			<tr>
-				<td><?php echo $hasil['id_barang'];?></td>
+				<td><?php echo $hasil['kode_barang'];?></td>
 				<td><?php echo $hasil['nama_barang'];?></td>
-				<td><?php echo $hasil['merk'];?></td>
+				<td><?php echo $hasil['nama_merk'];?></td>
 				<td><?php echo $hasil['harga_jual'];?></td>
 				<td>
-				<a href="fungsi/tambah/tambah.php?jual=jual&id=<?php echo $hasil['id_barang'];?>&id_kasir=<?php echo $_SESSION['admin']['id_member'];?>" 
+				<a href="fungsi/tambah/tambah.php?jual=jual&id=<?php echo $hasil['kode_barang'];?>&id_kasir=<?php echo $_SESSION['admin']['id_member'];?>" 
 					class="btn btn-success">
 					<i class="fa fa-shopping-cart"></i></a></td>
 			</tr>

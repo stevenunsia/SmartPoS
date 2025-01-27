@@ -212,7 +212,7 @@ if (!empty($_SESSION['admin'])) {
         $id = $_GET['id'];
 
         // get tabel barang id_barang
-        $sql = 'SELECT * FROM barang WHERE id_barang = ?';
+        $sql = 'SELECT * FROM barang WHERE kode_barang = ?';
         $row = $config->prepare($sql);
         $row->execute(array($id));
         $hsl = $row->fetch();

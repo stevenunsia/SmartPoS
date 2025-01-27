@@ -1,13 +1,11 @@
- <!--sidebar end-->
-      
-      <!-- **********************************************************************************************************************************************************
-      MAIN CONTENT
-      *********************************************************************************************************************************************************** -->
-      <!--main content start-->
+
 <?php 
 	$id = $_SESSION['admin']['id_member'];
-	$hasil = $lihat -> member_edit($id);
+	$hasil = $lihat->member_edit($id);
+// 	error_reporting(E_ALL);  // Aktifkan semua jenis error
+// ini_set('display_errors', 1);  // Tampilkan error di browser
 ?>
+
 	<h4>Keranjang Penjualan</h4>
 	<br>
 	<?php if(isset($_GET['success'])){?>
@@ -27,7 +25,7 @@
 					<h5><i class="fa fa-search"></i> Cari Barang</h5>
 				</div>
 				<div class="card-body">
-					<input type="text" id="cari" class="form-control" name="cari" placeholder="Masukan : Kode / Nama Barang  [ENTER]">
+				<input type="text" id="cari" class="form-control" name="cari" placeholder="Masukan : Kode / Nama Barang [ENTER]">
 				</div>
 			</div>
 		</div>
@@ -75,7 +73,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<?php $total_bayar=0; $no=1; $hasil_penjualan = $lihat -> penjualan();?>
+								<?php $total_bayar=0; $no=1; $hasil_penjualan = $lihat->penjualan();?>
 								<?php foreach($hasil_penjualan  as $isi){?>
 								<tr>
 									<td><?php echo $no;?></td>
@@ -85,7 +83,7 @@
 										<form method="POST" action="fungsi/edit/edit.php?jual=jual">
 												<input type="number" name="jumlah" value="<?php echo $isi['jumlah'];?>" class="form-control">
 												<input type="hidden" name="id" value="<?php echo $isi['id_penjualan'];?>" class="form-control">
-												<input type="hidden" name="id_barang" value="<?php echo $isi['id_barang'];?>" class="form-control">
+												<input type="hidden" name="id_barang" value="<?php echo $isi['kode_barang'];?>" class="form-control">
 											</td>
 											<td>Rp.<?php echo number_format($isi['total']);?>,-</td>
 											<td><?php echo $isi['nm_member'];?></td>
@@ -93,7 +91,7 @@
 												<button type="submit" class="btn btn-warning">Update</button>
 										</form>
 										<!-- aksi ke table penjualan -->
-										<a href="fungsi/hapus/hapus.php?jual=jual&id=<?php echo $isi['id_penjualan'];?>&brg=<?php echo $isi['id_barang'];?>
+										<a href="fungsi/hapus/hapus.php?jual=jual&id=<?php echo $isi['id_penjualan'];?>&brg=<?php echo $isi['kode_barang'];?>
 											&jml=<?php echo $isi['jumlah']; ?>"  class="btn btn-danger"><i class="fa fa-times"></i>
 										</a>
 									</td>
@@ -131,17 +129,17 @@
 											$row->execute($d);
 
 											// ubah stok barang
-											$sql_barang = "SELECT * FROM barang WHERE id_barang = ?";
+											$sql_barang = "SELECT * FROM barang WHERE kode_barang = ?";
 											$row_barang = $config->prepare($sql_barang);
 											$row_barang->execute(array($id_barang[$x]));
 											$hsl = $row_barang->fetch();
 											
 											$stok = $hsl['stok'];
-											$idb  = $hsl['id_barang'];
+											$idb  = $hsl['kode_barang'];
 
 											$total_stok = $stok - $jumlah[$x];
 											// echo $total_stok;
-											$sql_stok = "UPDATE barang SET stok = ? WHERE id_barang = ?";
+											$sql_stok = "UPDATE barang SET stok = ? WHERE kode_barang = ?";
 											$row_stok = $config->prepare($sql_stok);
 											$row_stok->execute(array($total_stok, $idb));
 										}
@@ -198,24 +196,43 @@
 	
 
 <script>
-// AJAX call for autocomplete 
 $(document).ready(function(){
-	$("#cari").change(function(){
-		$.ajax({
-			type: "POST",
-			url: "fungsi/edit/edit.php?cari_barang=yes",
-			data:'keyword='+$(this).val(),
-			beforeSend: function(){
-				$("#hasil_cari").hide();
-				$("#tunggu").html('<p style="color:green"><blink>tunggu sebentar</blink></p>');
-			},
-			success: function(html){
-				$("#tunggu").html('');
-				$("#hasil_cari").show();
-				$("#hasil_cari").html(html);
-			}
-		});
-	});
+    console.log("Document ready...");
+
+    $("#cari").keypress(function(event){
+        console.log("Key pressed: " + event.which);
+        if(event.which == 13) { // Jika tombol ENTER ditekan
+            console.log("Enter key detected.");
+            event.preventDefault();
+            let keyword = $(this).val().trim();
+
+            if(keyword !== "") {
+                console.log("Input value: " + keyword);
+
+                $.ajax({
+                    type: "POST",
+                    url: "fungsi/edit/edit.php?cari_barang=yes",
+                    data: { keyword: keyword },
+                    beforeSend: function(){
+                        console.log("AJAX request sent.");
+                        $("#hasil_cari").hide();
+                        $("#tunggu").html('<p style="color:green"><blink>tunggu sebentar...</blink></p>');
+                    },
+                    success: function(response){
+                        console.log("AJAX response received.");
+                        $("#tunggu").html('');
+                        $("#hasil_cari").show().html(response);
+                    },
+                    error: function(xhr, status, error){
+                        console.error("AJAX Error: " + status + " - " + error);
+                    }
+                });
+            } else {
+                console.log("Input kosong.");
+                alert("Silakan masukkan kode atau nama barang!");
+            }
+        }
+    });
 });
-//To select country name
+
 </script>

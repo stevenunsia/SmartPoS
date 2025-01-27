@@ -50,7 +50,7 @@ if (!empty($_SESSION['admin'])) {
 
     if (!empty(htmlentities($_GET['jual']))) {
         $dataI[] = htmlentities($_GET['brg']);
-        $sqlI = 'select*from barang where id_barang=?';
+        $sqlI = 'select * from barang where kode_barang=?';
         $rowI = $config -> prepare($sqlI);
         $rowI -> execute($dataI);
         $hasil = $rowI -> fetch();
