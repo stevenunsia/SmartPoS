@@ -56,6 +56,14 @@ class view
         $hasil = $row->fetchAll();
         return $hasil;
     }
+
+    public function pelanggan() {
+        $sql = "SELECT * FROM pelanggan";
+        $row = $this->db->prepare($sql);
+        $row->execute();
+        $hasil = $row->fetchAll();
+        return $hasil;
+    }
     
     public function supplier_cari($cari)
     {
@@ -89,8 +97,37 @@ class view
         return $format;
     }
 
+    public function pelanggan_id()
+    {
+        $sql = 'SELECT * FROM pelanggan ORDER BY id DESC';
+        $row = $this-> db -> prepare($sql);
+        $row -> execute();
+        $hasil = $row -> fetch();
+
+        $urut = substr($hasil['kode_pelanggan'], 2, 3);
+        $tambah = (int) $urut + 1;
+        if (strlen($tambah) == 1) {
+            $format = 'PL00'.$tambah.'';
+        } elseif (strlen($tambah) == 2) {
+            $format = 'PL0'.$tambah.'';
+        } else {
+            $ex = explode('BR', $hasil['kode_pelanggan']);
+            $no = (int) $ex[1] + 1;
+            $format = 'PL'.$no.'';
+        }
+        return $format;
+    }
+
     public function supplier_edit($id) {
         $sql = "SELECT * FROM supplier WHERE id = ?";
+        $row = $this->db->prepare($sql);
+        $row->execute(array($id));
+        $hasil = $row->fetch();
+        return $hasil;
+    }
+
+    public function pelanggan_edit($id) {
+        $sql = "SELECT * FROM pelanggan WHERE id = ?";
         $row = $this->db->prepare($sql);
         $row->execute(array($id));
         $hasil = $row->fetch();

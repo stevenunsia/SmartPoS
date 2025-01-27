@@ -36,6 +36,38 @@ if (!empty($_SESSION['admin'])) {
         }
     }
 
+    if (!empty($_GET['pelanggan'])) {
+
+        $kode_pelanggan = isset($_POST['kode_pelanggan']) ? htmlentities($_POST['kode_pelanggan']) : '';
+        $nama_pelanggan = isset($_POST['nama_pelanggan']) ? htmlentities($_POST['nama_pelanggan']) : '';
+        $alamat = isset($_POST['alamat']) ? htmlentities($_POST['alamat']) : '';
+        $telepon = isset($_POST['telepon']) ? htmlentities($_POST['telepon']) : '';
+        $tgl_input = date("Y-m-d H:i:s");
+        $tgl_update = date("Y-m-d H:i:s");
+
+        try {
+            $data = [$kode_pelanggan, $nama_pelanggan, $alamat, $telepon, $tgl_input, $tgl_update];
+        
+            // Query untuk INSERT data baru
+            $sql = 'INSERT INTO pelanggan (
+                kode_pelanggan, 
+                nama_pelanggan,
+                alamat,
+                telepon,
+                tgl_input,
+                tgl_update
+            ) VALUES (?, ?, ?, ?, ?, ?)';
+                    
+            $row = $config->prepare($sql);
+            $row->execute($data);
+
+            // Redirect setelah berhasil insert
+            echo '<script>window.location="../../index.php?page=pelanggan&success=tambah-data"</script>';
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+
     if (!empty($_GET['merk'])) {
 
         $kode_merk = isset($_POST['kode_merk']) ? htmlentities($_POST['kode_merk']) : '';

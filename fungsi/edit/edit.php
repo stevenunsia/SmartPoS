@@ -79,6 +79,32 @@ if (!empty($_SESSION['admin'])) {
         }
     }
 
+    if (!empty($_GET['pelanggan']) && $_GET['pelanggan'] == 'edit' ) {
+
+        $id = isset($_POST['id']) ? htmlentities($_POST['id']) : '';
+        $kode_pelanggan = isset($_POST['kode_pelanggan']) ? htmlentities($_POST['kode_pelanggan']) : '';
+        $nama_pelanggan = isset($_POST['nama_pelanggan']) ? htmlentities($_POST['nama_pelanggan']) : '';
+        $alamat = isset($_POST['alamat']) ? htmlentities($_POST['alamat']) : '';
+        $telepon = isset($_POST['telepon']) ? htmlentities($_POST['telepon']) : '';
+        $tgl_input = date("Y-m-d H:i:s");
+        $tgl_update = date("Y-m-d H:i:s");
+
+        try {
+            $data = [$kode_pelanggan, $nama_pelanggan, $alamat, $telepon, $tgl_update, $id];
+        
+            // Query untuk INSERT data baru
+            $sql = 'UPDATE pelanggan SET kode_pelanggan=?, nama_pelanggan=?, alamat=?, telepon=?, tgl_update=? WHERE id=?';
+                    
+            $row = $config->prepare($sql);
+            $row->execute($data);
+
+            // Redirect setelah berhasil insert
+            echo '<script>window.location="../../index.php?page=pelanggan/edit&pelanggan='.$id.'&success=edit-data"</script>';
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+
     if (!empty($_GET['merk']) && $_GET['merk'] == 'edit') {
 
         $id = isset($_POST['id']) ? htmlentities($_POST['id']) : '';
