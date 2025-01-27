@@ -32,15 +32,20 @@
 			</tr>
 			<tr>
 				<td>Gambar</td>
-				<td><?php
+				<td>
+					<?php
 						$upload_gambar = isset($hasil['upload_gambar']) ? $hasil['upload_gambar'] : '';
-						if($upload_gambar) {
-							?>
-							
-							<img src="<?php echo '/assets/uploads/images/'.$hasil['upload_gambar'];?>" alt="Thumbnail Preview" style="max-width: 200px; max-height: 200px;" />
-							<?php 
+						$linknya = '/assets/img/image_default.png';
+						if($upload_gambar != '') {
+							if(file_exists($_SERVER['DOCUMENT_ROOT'].'/assets/uploads/images/'.$hasil['upload_gambar']))
+							{
+								$linknya = '/assets/uploads/images/'.$hasil['upload_gambar'];
+							}
 						}
-						?>
+					?>
+							
+					<img src="<?php echo $linknya;?>" alt="Thumbnail Preview" style="max-width: 200px; max-height: 200px;" />
+							
 				</td>
 			</tr>
 			<tr>

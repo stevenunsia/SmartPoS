@@ -295,6 +295,7 @@ if (isset($_POST['filter'])) {
 <?php $stok = $lihat -> barang_stok_row();?>
 <?php $jual = $lihat -> jual_row();?>
 <?php $hasil_supplier = $lihat -> supplier_row();?>
+<?php $hasil_pelanggan = $lihat -> pelanggan_row();?>
 <div class="row">
     <!--STATUS cardS -->
     <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
@@ -379,6 +380,24 @@ if (isset($_POST['filter'])) {
             <div class="card-footer">
                 <a href='index.php?page=supplier'>Data
                     Supplier <i class='fa fa-angle-double-right'></i></a>
+            </div>
+        </div>
+        <!--/grey-card -->
+    </div><!-- /col-md-3-->
+
+    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h6 class="pt-2"><i class="fa fa-users"></i> Data Pelanggan</h6>
+            </div>
+            <div class="card-body">
+                <center>
+                    <h1><?php echo number_format($hasil_pelanggan);?></h1>
+                </center>
+            </div>
+            <div class="card-footer">
+                <a href='index.php?page=pelanggan'>Data
+                    Pelanggan <i class='fa fa-angle-double-right'></i></a>
             </div>
         </div>
         <!--/grey-card -->
