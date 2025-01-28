@@ -253,7 +253,7 @@ if (!empty($_SESSION['admin'])) {
             $kasir =  $_GET['id_kasir'];
             $jumlah = 1;
             $total = $hsl['harga_jual'];
-            $tgl = date("j F Y, G:i");
+            $tgl = date('Y-m-d H:i:s'); // Format datetime (YYYY-MM-DD HH:mm:ss)
 
             $data1[] = $id;
             $data1[] = $kasir;

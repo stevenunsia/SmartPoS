@@ -57,7 +57,8 @@
 					<td>Gambar ..</td>
 					<td>
 						<input type="file" name="upload_gambar" class="form-control">
-						
+						<input type="hidden" name="upload_gambar_lama" value="<?php echo $hasil['upload_gambar']; ?>">
+
 						<!-- Tempat untuk menampilkan thumbnail gambar -->
 						<?php
 							$upload_gambar = isset($hasil['upload_gambar']) ? $hasil['upload_gambar'] : '';
