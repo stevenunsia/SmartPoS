@@ -6,6 +6,19 @@
 // ini_set('display_errors', 1);  // Tampilkan error di browser
 ?>
 
+<style>
+.blink {
+    animation: blink-animation 0.5s steps(2, start) infinite;
+    border: 2px solid red; /* Tambahkan efek visual */
+}
+
+@keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}
+</style>
+
 	<h4>Keranjang Penjualan</h4>
 	<br>
 	<?php if(isset($_GET['success'])){?>
@@ -148,10 +161,27 @@
 							if(!empty($nota == 'yes')) {
 								$id_pelanggan = $_POST['id_pelanggan'];
 								// echo "id_pelanggan = ".$id_pelanggan;
-								
-								
+								$lanjut = false;
+								if($id_pelanggan == "")
+								{
+									echo "<script>
+										alert('ID Pelanggan Kosong, Silahkan Pilih terlebih dahulu');
+										var element = document.getElementById('id_pelanggan');
+										element.focus();
+										element.classList.add('blink'); // Tambahkan kelas 'blink'
+										
+										// Hapus kelas 'blink' setelah 2 detik
+										setTimeout(function() {
+											element.classList.remove('blink');
+										}, 2000);
+										</script>
+										";
+								} 
+								else {
+									$lanjut = true;
+								}
 
-								if(!empty($bayar))
+								if(!empty($bayar) and $lanjut == true)
 								{
 									$hitung = $bayar - $total;
 									if($bayar >= $total)
