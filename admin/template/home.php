@@ -2,17 +2,20 @@
 <br/>
 
 <?php
-// Ambil data penjualan secara default
-$sql = "SELECT DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) AS tanggal, 
+// Query untuk data hari ini
+$sql = "SELECT DATE(tanggal_input) AS tanggal, 
                SUM(CAST(jumlah AS UNSIGNED)) AS total_jumlah, 
                SUM(CAST(total AS UNSIGNED)) AS total_penjualan 
         FROM nota 
-        GROUP BY DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) 
+        WHERE DATE(tanggal_input) = CURDATE() 
+        GROUP BY DATE(tanggal_input) 
         ORDER BY tanggal ASC;";
 
+// Eksekusi query
 $stmt = $config->query($sql);
 $salesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+$startDate = date('Y-m-d');
+$endDate = date('Y-m-d');
 $totalSalesToday = 0;
 $data = [];
 foreach ($salesData as $row) {
@@ -35,15 +38,14 @@ if (isset($_POST['filter'])) {
     if (!empty($startDate) && !empty($endDate) && strtotime($startDate) <= strtotime($endDate)) {
 
         $sql = "SELECT 
-                    DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) AS tanggal, 
+                    DATE(tanggal_input) AS tanggal, 
                     SUM(CAST(jumlah AS UNSIGNED)) AS total_jumlah, 
                     SUM(CAST(total AS UNSIGNED)) AS total_penjualan 
                 FROM nota 
-                WHERE DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) 
-                    BETWEEN STR_TO_DATE(:start_date, '%Y-%m-%d') 
-                    AND STR_TO_DATE(:end_date, '%Y-%m-%d')
-                GROUP BY DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) 
-                ORDER BY DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) ASC;";
+                WHERE DATE(tanggal_input) BETWEEN :start_date AND :end_date 
+                GROUP BY DATE(tanggal_input) 
+                ORDER BY DATE(tanggal_input) ASC;
+            ";
 
         $stmt = $config->prepare($sql);
         $stmt->bindParam(':start_date', $startDate);
@@ -295,6 +297,7 @@ if (isset($_POST['filter'])) {
 <?php $stok = $lihat -> barang_stok_row();?>
 <?php $jual = $lihat -> jual_row();?>
 <?php $hasil_supplier = $lihat -> supplier_row();?>
+<?php $hasil_pelanggan = $lihat -> pelanggan_row();?>
 <div class="row">
     <!--STATUS cardS -->
     <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
@@ -379,6 +382,24 @@ if (isset($_POST['filter'])) {
             <div class="card-footer">
                 <a href='index.php?page=supplier'>Data
                     Supplier <i class='fa fa-angle-double-right'></i></a>
+            </div>
+        </div>
+        <!--/grey-card -->
+    </div><!-- /col-md-3-->
+
+    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h6 class="pt-2"><i class="fa fa-users"></i> Data Pelanggan</h6>
+            </div>
+            <div class="card-body">
+                <center>
+                    <h1><?php echo number_format($hasil_pelanggan);?></h1>
+                </center>
+            </div>
+            <div class="card-footer">
+                <a href='index.php?page=pelanggan'>Data
+                    Pelanggan <i class='fa fa-angle-double-right'></i></a>
             </div>
         </div>
         <!--/grey-card -->

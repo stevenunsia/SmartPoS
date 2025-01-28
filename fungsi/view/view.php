@@ -143,6 +143,15 @@ class view
         return $hasil;
     }
 
+    public function pelanggan_row()
+    {
+        $sql = "SELECT * FROM pelanggan";
+        $row = $this-> db -> prepare($sql);
+        $row -> execute();
+        $hasil = $row -> rowCount();
+        return $hasil;
+    }
+
     public function merk() {
         $sql = "SELECT * FROM merk";
         $row = $this->db->prepare($sql);

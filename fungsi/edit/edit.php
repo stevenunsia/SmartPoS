@@ -239,6 +239,9 @@ if (!empty($_SESSION['admin'])) {
                 }
                 // echo ", upload fungsi end;"; die();
             }
+            else {
+                $upload_gambar = isset($_POST['upload_gambar_lama']) ? htmlentities($_POST['upload_gambar_lama']) : '';
+            }
             // else{
             //     echo ", tidak ada yang musti di upload fungsi end;"; die();
             // }
@@ -408,6 +411,7 @@ if (!empty($_SESSION['admin'])) {
 				<th>ID Barang</th>
 				<th>Nama Barang</th>
 				<th>Merk</th>
+                <th>Stok</th>
 				<th>Harga Jual</th>
 				<th>Aksi</th>
 			</tr>
@@ -416,11 +420,12 @@ if (!empty($_SESSION['admin'])) {
 				<td><?php echo $hasil['kode_barang'];?></td>
 				<td><?php echo $hasil['nama_barang'];?></td>
 				<td><?php echo $hasil['nama_merk'];?></td>
+                <td><?php echo $hasil['stok'];?></td>
 				<td><?php echo $hasil['harga_jual'];?></td>
 				<td>
 				<a href="fungsi/tambah/tambah.php?jual=jual&id=<?php echo $hasil['kode_barang'];?>&id_kasir=<?php echo $_SESSION['admin']['id_member'];?>" 
 					class="btn btn-success">
-					<i class="fa fa-shopping-cart"></i></a></td>
+					<i class="fa fa-cart-plus"></i></a></td>
 			</tr>
 		<?php }?>
 		</table>

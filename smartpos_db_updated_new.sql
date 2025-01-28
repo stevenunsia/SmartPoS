@@ -3,9 +3,10 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Waktu pembuatan: 26 Jan 2025 pada 18.28
+-- Waktu pembuatan: 28 Jan 2025 pada 02.15
 -- Versi server: 9.1.0
 -- Versi PHP: 8.3.14
+-- update
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -39,8 +40,8 @@ CREATE TABLE `barang` (
   `harga_jual` varchar(255) NOT NULL,
   `stok` text NOT NULL,
   `upload_gambar` varchar(200) DEFAULT NULL,
-  `tgl_input` varchar(255) NOT NULL,
-  `tgl_update` varchar(255) DEFAULT NULL
+  `tgl_input` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tgl_update` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -48,10 +49,10 @@ CREATE TABLE `barang` (
 --
 
 INSERT INTO `barang` (`id`, `kode_barang`, `nama_barang`, `id_kategori`, `id_supplier`, `id_merk`, `id_satuan`, `harga_beli`, `harga_jual`, `stok`, `upload_gambar`, `tgl_input`, `tgl_update`) VALUES
-(17, 'BR001', '34343434', 7, 25, 29, 1, '4', '4', '2', '', '2025-01-26 18:53:03', '2025-01-27 01:11:16'),
-(18, 'BR002', 'test', 8, 22, 27, 1, '900', '1000', '1000', '67962b8e9485a.png', '2025-01-26 18:56:42', '2025-01-26 19:33:18'),
-(19, 'BR003', 'hhh', 8, 22, 27, 1, '900', '1000', '99', '', '2025-01-26 18:58:08', '2025-01-26 18:58:08'),
-(21, 'BR005', 'sdsdsdsd', 8, 22, 27, 1, '232', '3232', '100', '67962b1dc728f.png', '2025-01-26 19:04:48', '2025-01-26 19:31:25');
+(18, 'BR002', 'test', 3, 26, 31, 1, '2500', '3000', '3', '6798267748bd6.jpg', '2025-01-26 18:56:42', '2025-01-28 07:36:07'),
+(19, 'BR003', 'hhh', 3, 26, 30, 1, '1000', '1500', '4', '679826621fd20.jpg', '2025-01-26 18:58:08', '2025-01-28 08:52:07'),
+(21, 'BR005', 'sdsdsdsd', 2, 25, 29, 4, '10000', '12000', '-5', '679826e631dc4.jpg', '2025-01-26 19:04:48', '2025-01-28 08:58:00'),
+(24, 'BR006', 'Gehu Pedas', 2, 25, 29, 1, '1000', '2500', '65', '', '2025-01-28 08:24:30', '2025-01-28 09:15:17');
 
 -- --------------------------------------------------------
 
@@ -62,8 +63,8 @@ INSERT INTO `barang` (`id`, `kode_barang`, `nama_barang`, `id_kategori`, `id_sup
 CREATE TABLE `kategori` (
   `id` int NOT NULL,
   `nama_kategori` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `tgl_input` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `tgl_update` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL
+  `tgl_input` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tgl_update` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -71,7 +72,9 @@ CREATE TABLE `kategori` (
 --
 
 INSERT INTO `kategori` (`id`, `nama_kategori`, `tgl_input`, `tgl_update`) VALUES
-(2, 'KAT 1', '2025-01-27 01:26:43', '2025-01-27 01:26:55');
+(2, 'KAT 1', '2025-01-27 01:26:43', '2025-01-27 01:26:55'),
+(3, 'KAT 3', '2025-01-27 13:31:31', '2025-01-27 13:31:31'),
+(4, 'KAT 2', '2025-01-27 13:31:36', '2025-01-27 13:31:36');
 
 -- --------------------------------------------------------
 
@@ -123,7 +126,7 @@ INSERT INTO `member` (`id_member`, `nm_member`, `alamat_member`, `telepon`, `ema
 (15, 'Admin', '2', '2', '2@gmail.com', '1714378963av2.png', '2'),
 (16, 'steven', '', '', '', '1714378963av2.png', ''),
 (17, '1111', '', '', '', '1714378963av2.png', ''),
-(18, 'Heri', '', '', '', '1737508269QR Code - D 8153 XB.png', '');
+(18, 'Heri', '', '', '', '1737917068Screenshot 2025-01-25 at 09.37.19.png', '');
 
 -- --------------------------------------------------------
 
@@ -135,8 +138,8 @@ CREATE TABLE `merk` (
   `id` int NOT NULL,
   `kode_merk` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `nama_merk` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `tgl_input` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `tgl_update` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL
+  `tgl_input` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tgl_update` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -156,11 +159,12 @@ INSERT INTO `merk` (`id`, `kode_merk`, `nama_merk`, `tgl_input`, `tgl_update`) V
 
 CREATE TABLE `nota` (
   `id_nota` int NOT NULL,
+  `id_transaksi` int DEFAULT NULL,
   `id_barang` varchar(255) NOT NULL,
   `id_member` int NOT NULL,
   `jumlah` varchar(255) NOT NULL,
-  `total` varchar(255) NOT NULL,
-  `tanggal_input` varchar(255) NOT NULL,
+  `total` double DEFAULT NULL,
+  `tanggal_input` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `periode` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -168,15 +172,34 @@ CREATE TABLE `nota` (
 -- Dumping data untuk tabel `nota`
 --
 
-INSERT INTO `nota` (`id_nota`, `id_barang`, `id_member`, `jumlah`, `total`, `tanggal_input`, `periode`) VALUES
-(1, 'BR004', 1, '10', '120000', '29 April 2024, 15:51', '04-2024'),
-(2, 'BR005', 1, '40', '280000', '29 April 2024, 16:11', '04-2024'),
-(3, 'BR004', 1, '35', '420000', '29 April 2024, 16:11', '04-2024'),
-(4, 'BR004', 1, '4', '48000', '29 April 2024, 16:14', '04-2024'),
-(5, 'BR004', 1, '6', '72000', '30 October 2024, 9:11', '10-2024'),
-(6, 'BR005', 1, '1', '7000', '13 December 2024, 13:31', '12-2024'),
-(7, 'BR005', 1, '5', '35000', '13 December 2024, 14:47', '12-2024'),
-(8, 'BR004', 1, '1', '12000', '13 December 2024, 14:48', '12-2024');
+INSERT INTO `nota` (`id_nota`, `id_transaksi`, `id_barang`, `id_member`, `jumlah`, `total`, `tanggal_input`, `periode`) VALUES
+(1578, 8, 'BR005', 18, '5', 60000, '2025-01-28 08:52:25', '01-2025'),
+(1579, 8, 'BR006', 18, '10', 25000, '2025-01-28 08:52:33', '01-2025'),
+(1580, 9, 'BR006', 18, '4', 10000, '2025-01-28 09:06:52', '01-2025'),
+(1581, 10, 'BR006', 18, '1', 2500, '2025-01-28 09:15:10', '01-2025');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `pelanggan`
+--
+
+CREATE TABLE `pelanggan` (
+  `id` int NOT NULL,
+  `kode_pelanggan` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_pelanggan` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `alamat` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `telepon` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `tgl_input` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tgl_update` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `pelanggan`
+--
+
+INSERT INTO `pelanggan` (`id`, `kode_pelanggan`, `nama_pelanggan`, `alamat`, `telepon`, `tgl_input`, `tgl_update`) VALUES
+(2, 'PL001', 'Heri Hadian', 'Jl. Babakan Ciparay', '0898989898', '2025-01-27 16:24:14', '2025-01-27 16:24:14');
 
 -- --------------------------------------------------------
 
@@ -189,8 +212,9 @@ CREATE TABLE `penjualan` (
   `id_barang` varchar(255) NOT NULL,
   `id_member` int NOT NULL,
   `jumlah` varchar(255) NOT NULL,
-  `total` varchar(255) NOT NULL,
-  `tanggal_input` varchar(255) NOT NULL
+  `total` double DEFAULT NULL,
+  `tanggal_input` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tanggal_update` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -203,8 +227,8 @@ CREATE TABLE `satuan` (
   `id` int NOT NULL,
   `kode_satuan` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `nama_satuan` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `tgl_input` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `tgl_update` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL
+  `tgl_input` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tgl_update` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -212,8 +236,9 @@ CREATE TABLE `satuan` (
 --
 
 INSERT INTO `satuan` (`id`, `kode_satuan`, `nama_satuan`, `tgl_input`, `tgl_update`) VALUES
-(1, 'S001', 'PCS', '', '2025-01-27 00:37:16'),
-(2, 'S002', 'CM', '2025-01-27 00:01:36', '2025-01-27 00:01:36');
+(1, 'S001', 'PCS', '2025-01-27 00:01:36', '2025-01-27 00:37:16'),
+(2, 'S002', 'CM', '2025-01-27 00:01:36', '2025-01-27 00:01:36'),
+(4, 'S003', 'Paket', '2025-01-28 07:36:27', '2025-01-28 07:36:27');
 
 -- --------------------------------------------------------
 
@@ -227,8 +252,8 @@ CREATE TABLE `supplier` (
   `nama_supplier` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `alamat` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
   `telepon` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `tgl_input` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `tgl_update` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL
+  `tgl_input` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tgl_update` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -260,6 +285,29 @@ CREATE TABLE `toko` (
 
 INSERT INTO `toko` (`id_toko`, `nama_toko`, `alamat_toko`, `tlp`, `nama_pemilik`) VALUES
 (1, 'SmartPoS | Sistem Penjualan Smart PoS Berbasis AI', 'Universitas Siber Asia', '-', 'Kelompok 2 - IF701 - 2024/2025 Ganjil');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `transaksi`
+--
+
+CREATE TABLE `transaksi` (
+  `id_transaksi` int NOT NULL,
+  `kode_transaksi` varchar(100) DEFAULT NULL,
+  `id_pelanggan` int DEFAULT NULL,
+  `total_transaksi` double NOT NULL,
+  `tanggal_input` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tanggal_update` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data untuk tabel `transaksi`
+--
+
+INSERT INTO `transaksi` (`id_transaksi`, `kode_transaksi`, `id_pelanggan`, `total_transaksi`, `tanggal_input`, `tanggal_update`) VALUES
+(9, 'cKPShC3iuJ', 2, 10000, '2025-01-28 09:10:07', '2025-01-28 09:10:07'),
+(10, 'JTZxAm37rh', 2, 2500, '2025-01-28 09:15:17', '2025-01-28 09:15:17');
 
 --
 -- Indexes for dumped tables
@@ -302,6 +350,12 @@ ALTER TABLE `nota`
   ADD PRIMARY KEY (`id_nota`);
 
 --
+-- Indeks untuk tabel `pelanggan`
+--
+ALTER TABLE `pelanggan`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indeks untuk tabel `penjualan`
 --
 ALTER TABLE `penjualan`
@@ -326,6 +380,12 @@ ALTER TABLE `toko`
   ADD PRIMARY KEY (`id_toko`);
 
 --
+-- Indeks untuk tabel `transaksi`
+--
+ALTER TABLE `transaksi`
+  ADD PRIMARY KEY (`id_transaksi`);
+
+--
 -- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
@@ -333,13 +393,13 @@ ALTER TABLE `toko`
 -- AUTO_INCREMENT untuk tabel `barang`
 --
 ALTER TABLE `barang`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT untuk tabel `kategori`
 --
 ALTER TABLE `kategori`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT untuk tabel `login`
@@ -363,25 +423,37 @@ ALTER TABLE `merk`
 -- AUTO_INCREMENT untuk tabel `nota`
 --
 ALTER TABLE `nota`
-  MODIFY `id_nota` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_nota` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1582;
+
+--
+-- AUTO_INCREMENT untuk tabel `pelanggan`
+--
+ALTER TABLE `pelanggan`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `penjualan`
 --
 ALTER TABLE `penjualan`
-  MODIFY `id_penjualan` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_penjualan` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT untuk tabel `satuan`
 --
 ALTER TABLE `satuan`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT untuk tabel `supplier`
 --
 ALTER TABLE `supplier`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- AUTO_INCREMENT untuk tabel `transaksi`
+--
+ALTER TABLE `transaksi`
+  MODIFY `id_transaksi` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
