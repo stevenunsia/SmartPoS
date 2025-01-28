@@ -6,6 +6,7 @@
 -- Waktu pembuatan: 28 Jan 2025 pada 02.15
 -- Versi server: 9.1.0
 -- Versi PHP: 8.3.14
+-- update
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
