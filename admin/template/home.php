@@ -2,17 +2,20 @@
 <br/>
 
 <?php
-// Ambil data penjualan secara default
-$sql = "SELECT DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) AS tanggal, 
+// Query untuk data hari ini
+$sql = "SELECT DATE(tanggal_input) AS tanggal, 
                SUM(CAST(jumlah AS UNSIGNED)) AS total_jumlah, 
                SUM(CAST(total AS UNSIGNED)) AS total_penjualan 
         FROM nota 
-        GROUP BY DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) 
+        WHERE DATE(tanggal_input) = CURDATE() 
+        GROUP BY DATE(tanggal_input) 
         ORDER BY tanggal ASC;";
 
+// Eksekusi query
 $stmt = $config->query($sql);
 $salesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+$startDate = date('Y-m-d');
+$endDate = date('Y-m-d');
 $totalSalesToday = 0;
 $data = [];
 foreach ($salesData as $row) {
@@ -35,15 +38,14 @@ if (isset($_POST['filter'])) {
     if (!empty($startDate) && !empty($endDate) && strtotime($startDate) <= strtotime($endDate)) {
 
         $sql = "SELECT 
-                    DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) AS tanggal, 
+                    DATE(tanggal_input) AS tanggal, 
                     SUM(CAST(jumlah AS UNSIGNED)) AS total_jumlah, 
                     SUM(CAST(total AS UNSIGNED)) AS total_penjualan 
                 FROM nota 
-                WHERE DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) 
-                    BETWEEN STR_TO_DATE(:start_date, '%Y-%m-%d') 
-                    AND STR_TO_DATE(:end_date, '%Y-%m-%d')
-                GROUP BY DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) 
-                ORDER BY DATE(STR_TO_DATE(tanggal_input, '%d %M %Y, %H:%i')) ASC;";
+                WHERE DATE(tanggal_input) BETWEEN :start_date AND :end_date 
+                GROUP BY DATE(tanggal_input) 
+                ORDER BY DATE(tanggal_input) ASC;
+            ";
 
         $stmt = $config->prepare($sql);
         $stmt->bindParam(':start_date', $startDate);
