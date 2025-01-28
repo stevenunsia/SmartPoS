@@ -2,8 +2,8 @@
 <?php 
 	$id = $_SESSION['admin']['id_member'];
 	$hasil = $lihat->member_edit($id);
-	error_reporting(E_ALL);  // Aktifkan semua jenis error
-ini_set('display_errors', 1);  // Tampilkan error di browser
+	// error_reporting(E_ALL);  // Aktifkan semua jenis error
+// ini_set('display_errors', 1);  // Tampilkan error di browser
 ?>
 
 	<h4>Keranjang Penjualan</h4>
@@ -144,7 +144,7 @@ ini_set('display_errors', 1);  // Tampilkan error di browser
 							$bayar = isset($_POST['bayar']) ? $_POST['bayar'] : '';
 							$total = isset($_POST['total']) ? $_POST['total'] : '';
 							$hitung = 0;
-							
+
 							if(!empty($nota == 'yes')) {
 								$id_pelanggan = $_POST['id_pelanggan'];
 								// echo "id_pelanggan = ".$id_pelanggan;
